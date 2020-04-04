@@ -2,6 +2,9 @@ version: v1beta8
 images:
   default:
     image: dscr.io/${DEVSPACE_USERNAME}/recipemakerfront
+    build:
+      kaniko:
+        cache: false
 deployments:
 - name: recipe-maker-front
   helm:
