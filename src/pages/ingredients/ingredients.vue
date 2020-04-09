@@ -47,13 +47,11 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { FindAllIngredients } from "../../graphql/queries.gql";
 
 export default {
-    computed: mapState({
-        ingredients: (state) => state.ingredients,
-    }),
-    async created() {
-        await this.$store.dispatch("ingredients/getIngredients");
+    apollo: {
+        ingredients: FindAllIngredients,
     },
 };
 </script>

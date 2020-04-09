@@ -1,0 +1,19 @@
+query FindAllIngredients {
+    ingredients {
+        id
+        description
+        title
+        image
+        measurementType
+    }
+}
+
+query FindIngredientWithID($id: String!) {
+    ingredient(id: $id) {
+        id
+        description
+        title
+        image
+        measurementType
+    }
+}

@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import apolloClient from "../../apolloClient";
+import { FindAllIngredients } from "../../graphql/queries.gql";
 
 import { SAVE_INGREDIENTS, SET_INGREDIENTS } from "../mutations";
 
@@ -27,7 +28,8 @@ const actions = {
     async getIngredients(context) {
         console.log(context);
         const resp = await apolloClient.query({
-            query: gql`
+            query: FindAllIngredients,
+            /*query: gql`
                 query {
                     ingredients {
                         id
@@ -37,7 +39,7 @@ const actions = {
                         measurementType
                     }
                 }
-            `,
+            `,*/
         });
         context.commit(SET_INGREDIENTS, resp.data);
     },
