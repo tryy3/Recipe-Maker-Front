@@ -1,5 +1,5 @@
 <template>
-    <div class="container mx-auto ">
+    <div class="container mx-auto">
         <div class="w-full m-4 rounded overflow-hidden shadow-lg">
             <img
                 class=""
@@ -10,25 +10,65 @@
                 <div class="py-4 md:w-4/5 mx-auto">
                     <div class="flex flex-wrap -mx-3 mb-6">
                         <div class="w-full px-3">
-                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="editor-title">
+                            <label
+                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                for="editor-title"
+                            >
                                 Title
                             </label>
-                            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="editor-title" type="text" v-bind:value="ingredient.title">
+                            <input
+                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                id="editor-title"
+                                type="text"
+                                v-bind:value="ingredient.title"
+                            />
                         </div>
                     </div>
                     <div class="flex flex-wrap -mx-3">
                         <div class="w-full px-3">
-                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="editor-description">
+                            <label
+                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                for="editor-description"
+                            >
                                 Description
                             </label>
-                            <textarea class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="editor-description" id="editor-description" cols="30" rows="10" v-model="ingredient.description">das</textarea>
+                            <textarea
+                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                name="editor-description"
+                                id="editor-description"
+                                cols="30"
+                                rows="10"
+                                v-model="ingredient.description"
+                            >
+das</textarea
+                            >
                         </div>
                     </div>
                 </div>
                 <div class="py-4 md:w-4/5 mx-auto">
                     <div class="flex items-center justify-between">
-                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" v-on:click="saveIngredient">
+                        <button
+                            class="transition transition duration-300 ease-in-out text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            :class="{
+                                'bg-green-500': !saving,
+                                'hover:bg-green-700': !saving,
+                                'cursor-pointe': !saving,
+
+                                'bg-gray-500': saving,
+                                'cursor-wait': saving,
+                                'opacity-75': saving,
+                            }"
+                            type="button"
+                            v-on:click="saveIngredient"
+                            :disabled="saving"
+                        >
                             Save
+                            <div class="lds-ring" v-if="saving">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
                         </button>
                     </div>
                 </div>
@@ -38,34 +78,76 @@
 </template>
 
 <script>
-import cloneDeep from 'lodash/cloneDeep';
+import { mapState, mapActions } from "vuex";
+import cloneDeep from "lodash/cloneDeep";
 
 export default {
     methods: {
         saveIngredient() {
-            var id = this.$route.params.ID.toLowerCase();
-            for (const i in this.$root._data.ingredients) {
-                if (this.$root._data.ingredients[i].title.toLowerCase() == id) {
-                    this.$root._data.ingredients[i] = cloneDeep(this.ingredient)
-                    this.$root.createToast("success", "Saved");
-                    return;
-                }
-            }
-        }
+            if (this.saving) return;
+            this.saving = true;
+            this.$store
+                .dispatch("ingredients/saveIngredient", {
+                    ID: this.$route.params.ID,
+                    ingredient: this.ingredient,
+                })
+                .then(() => (this.saving = false));
+        },
+    },
+    computed: {
+        ingredient() {
+            return (
+                this.$store.getters["ingredients/findIngredientWithID"](
+                    this.$route.params.ID
+                ) || {}
+            );
+        },
+    },
+    async created() {
+        await this.$store.dispatch("ingredients/getIngredients");
     },
     data() {
-        var data = {};
-        var id = this.$route.params.ID.toLowerCase();
-        for (const o of this.$root._data.ingredients) {
-            if (o.title.toLowerCase() == id) {
-                data["ingredient"] = cloneDeep(o);
-                break;
-            }
-        }
-        
-        return data;
-    }
+        return {
+            saving: false,
+        };
+    },
 };
 </script>
 
-<style></style>
+<style>
+.lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 15px;
+    height: 15px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    margin: 4px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>

@@ -1,54 +1,60 @@
 <template>
-    <div class="container mx-auto flex flex-wrap justify-center">
-        <div
-            v-for="(ingredient, index) in ingredients"
-            :key="index"
-            class="w-1/3"
-        >
-            <div class="mx-4 my-4 rounded overflow-hidden shadow-lg">
-                <router-link v-bind:to="'/ingredient/'+ingredient.title">
-                    <img
-                        class=""
-                        v-bind:src="ingredient.image"
-                        alt="Sunset in the mountains"
-                    />
-                    <div class="px-6">
-                        <div class="py-4">
-                            <div class="font-bold text-xl mb-2">
-                                {{ ingredient.title }}
+    <div>
+        <div class="container mx-auto flex flex-wrap justify-center">
+            <div
+                v-for="(ingredient, index) in ingredients"
+                :key="index"
+                class="w-1/3"
+            >
+                <div class="mx-4 my-4 rounded overflow-hidden shadow-lg">
+                    <router-link v-bind:to="'/ingredient/' + ingredient.id">
+                        <img
+                            class=""
+                            v-bind:src="ingredient.image"
+                            alt="Sunset in the mountains"
+                        />
+                        <div class="px-6">
+                            <div class="py-4">
+                                <div class="font-bold text-xl mb-2">
+                                    {{ ingredient.title }}
+                                </div>
+                                <p class="text-gray-700 text-base break-words">
+                                    {{ ingredient.description }}
+                                </p>
                             </div>
-                            <p class="text-gray-700 text-base break-words">
-                                {{ ingredient.description }}
-                            </p>
+                            <div class="py-4">
+                                <span
+                                    class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+                                    >#photography</span
+                                >
+                                <span
+                                    class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
+                                    >#travel</span
+                                >
+                                <span
+                                    class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700"
+                                    >#winter</span
+                                >
+                            </div>
                         </div>
-                        <div class="py-4">
-                            <span
-                                class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
-                                >#photography</span
-                            >
-                            <span
-                                class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
-                                >#travel</span
-                            >
-                            <span
-                                class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700"
-                                >#winter</span
-                            >
-                        </div>
-                    </div>
-                </router-link>
+                    </router-link>
+                </div>
             </div>
         </div>
+        <div v-if="$apollo.loading">Loading...</div>
     </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 
 export default {
     computed: mapState({
-        ingredients: state => state.ingredients,
+        ingredients: (state) => state.ingredients,
     }),
+    async created() {
+        await this.$store.dispatch("ingredients/getIngredients");
+    },
 };
 </script>
 

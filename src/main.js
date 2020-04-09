@@ -1,45 +1,40 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import store from './store'
+// Import Vue related imports
+import Vue from "vue";
+import VueRouter from "vue-router";
+import VueApollo from "vue-apollo";
+import store from "./store";
+import routes from "./routes";
+import App from "./App.vue";
+import apolloClient from "./apolloClient";
 
-import './styles/output.css'
+// Import global css styles
+import "./styles/output.css";
 
-import App from './App.vue'
+// Initialize Vue plugins
+Vue.use(VueRouter);
+Vue.use(VueApollo);
 
-import routes from './routes'
+// Create and initialize apollo
 
-Vue.use(VueRouter)
+const apolloProvider = new VueApollo({
+    defaultClient: apolloClient,
+});
 
+// Initialize the router
 const router = new VueRouter({
-    mode: 'history',
+    mode: "history",
     routes,
 });
-console.log(store);
 
+// Initialize Vue
 new Vue({
+    apolloProvider,
     router,
-    el: '#app',
-    render: h => h(App),
+    el: "#app",
+    render: (h) => h(App),
     store,
-    methods: {
-        createToast(level, message) {
-            toasts.push({
-                level,
-                message,
-                id: toasts.length,
-            });
-            console.log(toasts);
-        },
-        removeToast(id) {
-            for (const i in toasts) {
-                if (toasts[i].id == id) {
-                    toasts.splice(i, 1);
-                    return;
-                }
-            }
-        }
-    },
+    methods: {},
     data: {
         ...store,
-    }
-})
+    },
+});
