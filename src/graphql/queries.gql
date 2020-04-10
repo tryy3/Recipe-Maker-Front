@@ -1,3 +1,10 @@
+input IngredientInput {
+    description: String
+    title: String
+    image: String
+    measurementType: String
+}
+
 query FindAllIngredients {
     ingredients {
         id
@@ -10,6 +17,16 @@ query FindAllIngredients {
 
 query FindIngredientWithID($id: String!) {
     ingredient(id: $id) {
+        id
+        description
+        title
+        image
+        measurementType
+    }
+}
+
+mutation UpdateIngredient($id: ID!, $ingredient: IngredientInput!) {
+    updateIngredient(id: $id, ingredient: $ingredient) {
         id
         description
         title

@@ -1,15 +1,21 @@
 <template>
     <div>
-        <div>
-            h
-            <div class="loading">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+        <div class="loading-box" v-if="$apollo.loading">
+            <div>
+                <div id="floatingCirclesG">
+                    <div class="f_circleG" id="frotateG_01"></div>
+                    <div class="f_circleG" id="frotateG_02"></div>
+                    <div class="f_circleG" id="frotateG_03"></div>
+                    <div class="f_circleG" id="frotateG_04"></div>
+                    <div class="f_circleG" id="frotateG_05"></div>
+                    <div class="f_circleG" id="frotateG_06"></div>
+                    <div class="f_circleG" id="frotateG_07"></div>
+                    <div class="f_circleG" id="frotateG_08"></div>
+                </div>
+                <div class="text-gray-700 text-center text-2xl">Loading...</div>
             </div>
         </div>
-        <div class="container mx-auto">
+        <div class="container mx-auto" v-if="!$apollo.loading">
             <div class="lds-ring" v-if="saving">
                 <div></div>
                 <div></div>
@@ -72,7 +78,7 @@ das</textarea
 
                                     'bg-gray-500': saving,
                                     'cursor-wait': saving,
-                                    'opacity-75': saving,
+                                    'opacity-75': saving
                                 }"
                                 type="button"
                                 v-on:click="saveIngredient"
@@ -95,96 +101,56 @@ das</textarea
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
 import cloneDeep from "lodash/cloneDeep";
-import { FindIngredientWithID } from "../../graphql/queries.gql";
+import {
+    FindIngredientWithID,
+    UpdateIngredient
+} from "../../graphql/queries.gql";
 
 export default {
     methods: {
         saveIngredient() {
-            if (this.saving) return;
             this.saving = true;
-            this.$store
-                .dispatch("ingredients/saveIngredient", {
-                    ID: this.$route.params.ID,
-                    ingredient: this.ingredient,
+            this.$apollo
+                .mutate({
+                    mutation: UpdateIngredient,
+                    variables: {
+                        id: this.$route.params.ID,
+                        ingredient: {
+                            title: this.ingredient.title,
+                            description: this.ingredient.description,
+                            image: this.ingredient.image,
+                            measurementType: this.ingredient.measurementType
+                        }
+                    }
                 })
-                .then(() => (this.saving = false));
-        },
+                .then(data => {
+                    this.saving = false;
+                    this.$toast.success("Saved");
+                })
+                .catch(err => {
+                    this.saving = false;
+                    console.log(err);
+                    this.$toast.error(err);
+                });
+        }
     },
     apollo: {
         ingredient: {
             query: FindIngredientWithID,
             variables() {
                 return {
-                    id: this.$route.params.ID,
+                    id: this.$route.params.ID
                 };
-            },
-        },
+            }
+        }
     },
     data() {
         return {
-            saving: false,
+            saving: false
         };
-    },
+    }
 };
 </script>
 
-<style>
-.loading {
-    display: inline-block;
-    position: relative;
-    width: 50px;
-    height: 50px;
-}
-.loading div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    margin: 4px;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #ccc transparent transparent transparent;
-}
-.lds-ring {
-    display: inline-block;
-    position: relative;
-    width: 15px;
-    height: 15px;
-}
-.lds-ring div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    margin: 4px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #fff transparent transparent transparent;
-}
-
-.lds-ring div:nth-child(1),
-.loading div:nth-child(1) {
-    animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2),
-.loading div:nth-child(1) {
-    animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3, .loading div:nth-child(1)) {
-    animation-delay: -0.15s;
-}
-@keyframes spinner {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-</style>
+<style></style>

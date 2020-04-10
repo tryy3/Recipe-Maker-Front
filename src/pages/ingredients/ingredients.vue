@@ -1,6 +1,24 @@
 <template>
     <div>
-        <div class="container mx-auto flex flex-wrap justify-center">
+        <div class="loading-box" v-if="$apollo.loading">
+            <div>
+                <div id="floatingCirclesG">
+                    <div class="f_circleG" id="frotateG_01"></div>
+                    <div class="f_circleG" id="frotateG_02"></div>
+                    <div class="f_circleG" id="frotateG_03"></div>
+                    <div class="f_circleG" id="frotateG_04"></div>
+                    <div class="f_circleG" id="frotateG_05"></div>
+                    <div class="f_circleG" id="frotateG_06"></div>
+                    <div class="f_circleG" id="frotateG_07"></div>
+                    <div class="f_circleG" id="frotateG_08"></div>
+                </div>
+                <div class="text-gray-700 text-center text-2xl">Loading...</div>
+            </div>
+        </div>
+        <div
+            class="container mx-auto flex flex-wrap justify-center"
+            v-if="!$apollo.loading"
+        >
             <div
                 v-for="(ingredient, index) in ingredients"
                 :key="index"
@@ -46,13 +64,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
 import { FindAllIngredients } from "../../graphql/queries.gql";
 
 export default {
     apollo: {
-        ingredients: FindAllIngredients,
-    },
+        ingredients: FindAllIngredients
+    }
 };
 </script>
 

@@ -51,50 +51,16 @@
             </div>
         </nav>
         <router-view></router-view>
-
-        <div class="w-1/5 fixed right-0 bottom-0 mr-4">
-            <transition-group name="slide-fade" appear>
-                <Toast
-                    v-for="toast of toasts"
-                    v-bind:key="toast.id"
-                    v-bind:toast="toast"
-                />
-            </transition-group>
-        </div>
     </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import Toast from "./components/Toast.vue";
-
 export default {
     name: "app",
-    components: {
-        Toast,
-    },
-    computed: mapState({
-        toasts: (state) => state.toasts,
-    }),
     data() {
-        return {
-            //toasts: this.$root._data.toasts,
-            msg: "Welcome to Your Vue.js App",
-        };
-    },
+        return {};
+    }
 };
 </script>
 
-<style>
-.slide-fade-enter-active {
-    transition: all 0.8s cubic-bezier(1, 0.8, 0.5, 1);
-}
-.slide-fade-leave-active {
-    transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
-    transform: translateX(30px);
-    opacity: 0;
-}
-</style>
+<style></style>
