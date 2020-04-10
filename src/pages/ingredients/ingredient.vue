@@ -1,18 +1,15 @@
 <template>
     <div>
         <div class="loading-box" v-if="$apollo.loading">
-            <div>
-                <div id="floatingCirclesG">
-                    <div class="f_circleG" id="frotateG_01"></div>
-                    <div class="f_circleG" id="frotateG_02"></div>
-                    <div class="f_circleG" id="frotateG_03"></div>
-                    <div class="f_circleG" id="frotateG_04"></div>
-                    <div class="f_circleG" id="frotateG_05"></div>
-                    <div class="f_circleG" id="frotateG_06"></div>
-                    <div class="f_circleG" id="frotateG_07"></div>
-                    <div class="f_circleG" id="frotateG_08"></div>
+            <div class="flex content-center flex-wrap">
+                <div class="w-full text-center">
+                    <i
+                        class="text-gray-700 fas fa-sync fa-spin text-center text-6xl"
+                    ></i>
+                    <div class="text-gray-700 text-center text-2xl mt-10">
+                        Loading...
+                    </div>
                 </div>
-                <div class="text-gray-700 text-center text-2xl">Loading...</div>
             </div>
         </div>
         <div class="container mx-auto" v-if="!$apollo.loading">
