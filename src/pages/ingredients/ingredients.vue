@@ -23,10 +23,17 @@
             >
                 <div class="mx-4 my-4 rounded overflow-hidden shadow-lg">
                     <router-link v-bind:to="'/ingredient/' + ingredient.id">
-                        <img
-                            class=""
-                            v-bind:src="ingredient.image"
-                            alt="Sunset in the mountains"
+                        <!--div v-for="(image, index) in images" :key="index">
+                            <cld-image
+                                :publicId="image"
+                                width="auto"
+                                crop="scale"
+                            />
+                        </div-->
+                        <cld-image
+                            :publicId="ingredient.image"
+                            width="auto"
+                            crop="scale"
                         />
                         <div class="px-6">
                             <div class="py-4">

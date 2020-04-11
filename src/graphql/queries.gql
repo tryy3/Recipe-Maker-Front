@@ -5,6 +5,16 @@ input IngredientInput {
     measurementType: String
 }
 
+"The `Upload` scalar type represents a multipart file upload."
+scalar Upload
+
+"The `File` type, represents the response of uploading a file."
+type File {
+    id: Int!
+    name: String!
+    content: String!
+}
+
 query FindAllIngredients {
     ingredients {
         id
@@ -32,5 +42,21 @@ mutation UpdateIngredient($id: ID!, $ingredient: IngredientInput!) {
         title
         image
         measurementType
+    }
+}
+
+mutation CreateIngredient($ingredient: IngredientInput!) {
+    createIngredient(ingredient: $ingredient) {
+        id
+        description
+        title
+        image
+        measurementType
+    }
+}
+
+mutation UploadFiles($files: [Upload!]!) {
+    uploadFiles(files: $files) {
+        id
     }
 }

@@ -6,6 +6,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import VueApollo from "vue-apollo";
 import VueToast from "vue-toast-notification";
+import Cloudinary from "cloudinary-vue";
 
 // Internal imports
 import routes from "./routes";
@@ -21,6 +22,11 @@ import "./styles/base.css";
 Vue.use(VueRouter);
 Vue.use(VueApollo);
 Vue.use(VueToast);
+Vue.use(Cloudinary, {
+    configuration: {
+        cloudName: "ddsiiisuy"
+    }
+});
 
 // Create and initialize apollo
 const apolloProvider = new VueApollo({
