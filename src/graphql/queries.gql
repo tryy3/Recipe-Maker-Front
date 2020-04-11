@@ -55,6 +55,10 @@ mutation CreateIngredient($ingredient: IngredientInput!) {
     }
 }
 
+mutation DeleteIngredient($id: ID!) {
+    deleteIngredient(id: $id)
+}
+
 mutation UploadFiles($files: [Upload!]!) {
     uploadFiles(files: $files) {
         id
