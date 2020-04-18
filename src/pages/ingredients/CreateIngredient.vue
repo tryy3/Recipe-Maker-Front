@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import { CreateIngredient } from "../../graphql/ingredients.gql";
-import IngredientEditor from "../../components/IngredientEditor";
+import { CreateIngredient } from "@/graphql/ingredients.gql";
+import IngredientEditor from "@/components/IngredientEditor";
 
 export default {
     components: {

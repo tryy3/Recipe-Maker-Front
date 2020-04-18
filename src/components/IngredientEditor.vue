@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import { UpdateIngredient } from "../graphql/ingredients.gql";
-import UploadImage from "./UploadImage.vue";
+import { UpdateIngredient } from "@/graphql/ingredients.gql";
+import UploadImage from "@/components/UploadImage.vue";
 
 export default {
     components: {

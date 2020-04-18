@@ -10,7 +10,7 @@ import Cloudinary from "cloudinary-vue";
 
 // Internal imports
 import routes from "./routes";
-import App from "./App.vue";
+import App from "./App";
 import apolloClient from "./apolloClient";
 
 // Import global css styles

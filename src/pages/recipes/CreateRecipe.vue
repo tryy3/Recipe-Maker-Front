@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import { CreateRecipe } from "../../graphql/recipes.gql";
-import RecipeEditor from "../../components/RecipeEditor";
+import { CreateRecipe } from "@/graphql/recipes.gql";
+import RecipeEditor from "@/components/RecipeEditor";
 
 export default {
     components: {

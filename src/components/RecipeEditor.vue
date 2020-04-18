@@ -220,9 +220,9 @@ import {
     //UpdateRecipe,
     AddRecipeIngredient,
     RemoveRecipeIngredient
-} from "../graphql/recipes.gql";
-import { FindAllIngredients } from "../graphql/ingredients.gql";
-import UploadImage from "./UploadImage.vue";
+} from "@/graphql/recipes.gql";
+import { FindAllIngredients } from "@/graphql/ingredients.gql";
+import UploadImage from "@/components/UploadImage.vue";
 import Draggable from "vuedraggable";
 
 // TODO: Set the correct name and prefix, maybe rename to shortName?

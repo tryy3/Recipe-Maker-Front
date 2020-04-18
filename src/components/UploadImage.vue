@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { UploadFiles } from "../graphql/ingredients.gql";
+import { UploadFiles } from "@/graphql/ingredients.gql";
 
 export default {
     props: {

@@ -50,8 +50,8 @@
 import {
     FindIngredientWithID,
     UpdateIngredient
-} from "../../graphql/ingredients.gql";
-import IngredientEditor from "../../components/IngredientEditor";
+} from "@/graphql/ingredients.gql";
+import IngredientEditor from "@/components/IngredientEditor";
 
 export default {
     components: {

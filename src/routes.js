@@ -1,13 +1,13 @@
 const Foo = { template: "<div>foo</div>" };
 const Bar = { template: "<div>bar</div>" };
 
-import Ingredients from "./pages/ingredients/Ingredients.vue";
-import UpdateIngredient from "./pages/ingredients/UpdateIngredient.vue";
-import CreateIngredient from "./pages/ingredients/CreateIngredient.vue";
+import Ingredients from "@/pages/ingredients/Ingredients.vue";
+import UpdateIngredient from "@/pages/ingredients/UpdateIngredient.vue";
+import CreateIngredient from "@/pages/ingredients/CreateIngredient.vue";
 
-import Recipes from "./pages/recipes/Recipes.vue";
-import UpdateRecipe from "./pages/recipes/UpdateRecipe.vue";
-import CreateRecipe from "./pages/recipes/CreateRecipe.vue";
+import Recipes from "@/pages/recipes/Recipes.vue";
+import UpdateRecipe from "@/pages/recipes/UpdateRecipe.vue";
+import CreateRecipe from "@/pages/recipes/CreateRecipe.vue";
 
 export default [
     // Ingredients routes
@@ -27,7 +27,7 @@ export default [
     // Recipes routes
     {
         path: "/recipes",
-        component: Ingredients
+        component: Recipes
     },
     {
         path: "/recipe/create",

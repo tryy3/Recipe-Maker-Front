@@ -83,7 +83,7 @@
 import {
     FindAllIngredients,
     DeleteIngredient
-} from "../../graphql/ingredients.gql";
+} from "@/graphql/ingredients.gql";
 
 export default {
     methods: {
