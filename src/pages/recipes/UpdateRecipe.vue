@@ -13,7 +13,7 @@
             </div>
         </div>
         <div v-if="!$apollo.loading">
-            <ingredient-editor :ingredient="ingredient">
+            <recipe-editor :recipe="recipe">
                 <div class="py-4 md:w-4/5 mx-auto">
                     <div class="flex items-center justify-between">
                         <button
@@ -28,7 +28,7 @@
                                 'opacity-75': saving
                             }"
                             type="button"
-                            v-on:click="saveIngredient"
+                            v-on:click="saveRecipe"
                             :disabled="saving"
                         >
                             Save
@@ -41,34 +41,39 @@
                         </button>
                     </div>
                 </div>
-            </ingredient-editor>
+            </recipe-editor>
         </div>
     </div>
 </template>
 
 <script>
-import {
-    FindIngredientWithID,
-    UpdateIngredient
-} from "../../graphql/ingredients.gql";
-import IngredientEditor from "../../components/IngredientEditor";
+import { FindRecipeWithID, UpdateRecipe } from "../../graphql/recipes.gql";
+import RecipeEditor from "../../components/RecipeEditor";
 
 export default {
     components: {
-        IngredientEditor
+        RecipeEditor
     },
     methods: {
-        saveIngredient() {
+        saveRecipe() {
             this.saving = true;
+
+            let recipe = {
+                description: this.recipe.description,
+                title: this.recipe.title,
+                ingredients: this.recipe.ingredients.map(o => ({
+                    id: o.id,
+                    measurementType: o.measurementType,
+                    measurementValue: o.measurementValue
+                }))
+            };
+
             this.$apollo
                 .mutate({
-                    mutation: UpdateIngredient,
+                    mutation: UpdateRecipe,
                     variables: {
                         id: this.$route.params.ID,
-                        ingredient: {
-                            title: this.ingredient.title,
-                            description: this.ingredient.description
-                        }
+                        recipe: recipe
                     }
                 })
                 .then(data => {
@@ -83,8 +88,8 @@ export default {
         }
     },
     apollo: {
-        ingredient: {
-            query: FindIngredientWithID,
+        recipe: {
+            query: FindRecipeWithID,
             variables() {
                 return {
                     id: this.$route.params.ID

@@ -15,7 +15,10 @@ const client = new ApolloClient({
                 );
             if (networkError) console.log(`[Network error]: ${networkError}`);
         }),
-        createUploadLink({ uri: "http://localhost:8090/query" })
+        createUploadLink({
+            //uri: "https://recipe-maker-backend.tryy3.us/query"
+            uri: "http://localhost:8090/query"
+        })
     ]),
     cache: new InMemoryCache()
 });

@@ -10,7 +10,7 @@
         />
 
         <div v-for="(image, index) in images" :key="index">
-            <cld-image :publicId="image" width="auto" crop="scale" />
+            <cld-image :publicId="image || ''" width="auto" crop="scale" />
         </div>
 
         <div class="flex flex-wrap justify-center my-2">
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { UploadFiles } from "../graphql/queries.gql";
+import { UploadFiles } from "../graphql/ingredients.gql";
 
 export default {
     props: {

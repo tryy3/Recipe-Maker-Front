@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <ingredient-editor :ingredient="ingredient">
+            <recipe-editor :recipe="recipe">
                 <div class="py-4 md:w-4/5 mx-auto">
                     <div class="flex items-center justify-between">
                         <button
@@ -16,7 +16,7 @@
                                 'opacity-75': creating
                             }"
                             type="button"
-                            v-on:click="createIngredient"
+                            v-on:click="createRecipe"
                             :disabled="creating"
                         >
                             Create
@@ -29,39 +29,36 @@
                         </button>
                     </div>
                 </div>
-            </ingredient-editor>
+            </recipe-editor>
         </div>
     </div>
 </template>
 
 <script>
-import { CreateIngredient } from "../../graphql/ingredients.gql";
-import IngredientEditor from "../../components/IngredientEditor";
+import { CreateRecipe } from "../../graphql/recipes.gql";
+import RecipeEditor from "../../components/RecipeEditor";
 
 export default {
     components: {
-        IngredientEditor
+        RecipeEditor
     },
     methods: {
-        createIngredient() {
+        createRecipe() {
             this.creating = true;
             this.$apollo
                 .mutate({
-                    mutation: CreateIngredient,
+                    mutation: CreateRecipe,
                     variables: {
-                        ingredient: {
-                            title: this.ingredient.title,
-                            description: this.ingredient.description,
-                            image: this.ingredient.image
+                        recipe: {
+                            title: this.recipe.title,
+                            description: this.recipe.description
                         }
                     }
                 })
                 .then(({ data }) => {
                     this.creating = false;
                     this.$toast.success("Created");
-                    this.$router.push(
-                        "/ingredient/" + data.createIngredient.id
-                    );
+                    this.$router.push("/recipe/" + data.createRecipe.id);
                 })
                 .catch(err => {
                     this.creating = false;
@@ -72,7 +69,7 @@ export default {
     },
     data() {
         return {
-            ingredient: {
+            recipe: {
                 image: "",
                 title: "",
                 description: ""

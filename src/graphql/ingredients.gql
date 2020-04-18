@@ -2,7 +2,6 @@ input IngredientInput {
     description: String
     title: String
     image: String
-    measurementType: String
 }
 
 "The `Upload` scalar type represents a multipart file upload."
@@ -21,7 +20,6 @@ query FindAllIngredients {
         description
         title
         image
-        measurementType
     }
 }
 
@@ -31,7 +29,6 @@ query FindIngredientWithID($id: String!) {
         description
         title
         image
-        measurementType
     }
 }
 
@@ -41,7 +38,6 @@ mutation UpdateIngredient($id: ID!, $ingredient: IngredientInput!) {
         description
         title
         image
-        measurementType
     }
 }
 
@@ -51,7 +47,6 @@ mutation CreateIngredient($ingredient: IngredientInput!) {
         description
         title
         image
-        measurementType
     }
 }
 

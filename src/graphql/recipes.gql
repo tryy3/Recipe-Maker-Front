@@ -1,0 +1,107 @@
+# TODO: Add a comment with each value on how much it is to it's base value
+# TODO: Double check if any of this is uneccesary, might be better to start with a small amount and then work our way up
+enum MeasurementType {
+    # Volume - Base is liter
+    TEASPOON
+    TABLESPOON
+    FLUIDOUNCE
+    GILL
+    CUP
+    PINT
+    QUART
+    MILLILITER
+    CENTERLITER
+    DECILITER
+    LITER
+
+    # Weight - Base is gram
+    POUND
+    OUNCE
+    MILLIGRAM
+    GRAM
+    KILOGRAM
+}
+
+type RecipeIngredient {
+    id: ID!
+    title: String
+    description: String
+    image: String
+    measurementType: MeasurementType
+    measurementValue: Float
+}
+
+type Recipe {
+    id: ID!
+    title: String
+    description: String
+    image: String
+    ingredients: [RecipeIngredient]
+}
+
+input RecipeInput {
+    title: String
+    description: String
+}
+
+input RecipeUpdateInput {
+    title: String
+    description: String
+    ingredients: [RecipeIngredientUpdateInput]
+}
+
+input RecipeIngredientUpdateInput {
+    id: ID!
+    measurementType: MeasurementType
+    measurementValue: Float
+}
+
+query FindRecipeWithID($id: String!) {
+    recipe(id: $id) {
+        id
+        description
+        title
+        image
+        ingredients {
+            id
+            title
+            description
+            image
+            measurementType
+            measurementValue
+        }
+    }
+}
+
+mutation CreateRecipe($recipe: RecipeInput!) {
+    createRecipe(recipe: $recipe) {
+        id
+        description
+        title
+    }
+}
+
+mutation UpdateRecipe($id: ID!, $recipe: RecipeUpdateInput!) {
+    updateRecipe(id: $id, recipe: $recipe) {
+        id
+        description
+        title
+        image
+        ingredients {
+            id
+            title
+            description
+            image
+            measurementType
+            measurementValue
+        }
+    }
+}
+
+mutation AddRecipeIngredient($recipeID: ID!, $ingredientID: ID!) {
+    addRecipeIngredient(recipeID: $recipeID, ingredientID: $ingredientID)
+}
+
+mutation RemoveRecipeIngredient($recipeID: ID!, $ingredientID: ID!) {
+    removeRecipeIngredient(recipeID: $recipeID, ingredientID: $ingredientID)
+}

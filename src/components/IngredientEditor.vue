@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { UpdateIngredient } from "../graphql/queries.gql";
+import { UpdateIngredient } from "../graphql/ingredients.gql";
 import UploadImage from "./UploadImage.vue";
 
 export default {
@@ -78,8 +78,6 @@ export default {
                     }
                 })
                 .then(data => {
-                    console.log(data);
-                    console.log(this);
                     this.$toast.success("Uploaded");
                 })
                 .catch(err => {
