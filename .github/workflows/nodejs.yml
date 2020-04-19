@@ -43,7 +43,7 @@ jobs:
       run: echo ${{ secrets.ftp_secret }} >> "$HOME/.ssh/ftp_publish_key"
 
     - name: FTP-Deploy-Action
-      uses: SamKirkland@FTP-Deploy-Action@3.0.0
+      uses: SamKirkland/FTP-Deploy-Action@3.0.0
       with:
         ftp-server: sftp://ns12.inleed.net:2020/${{ secrets.ftp_path }}
         ftp-username: ${{ secrets.ftp_username }}
