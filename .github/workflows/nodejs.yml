@@ -45,11 +45,13 @@ jobs:
       run: echo "${{ secrets.ftp_private_key }}" >> "$HOME/.ssh/ftp_key"
     - name: Create SSH public key
       run: echo "${{ secrets.ftp_public_key }}" >> "$HOME/.ssh/ftp_key.pub"
-
+    
+    - run: ping ns12.inleed.net -c 4
+    
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
       with:
-        ftp-server: sftp://ns12.inleed.net:2020/${{ secrets.ftp_path }}
+        ftp-server: sftp://185.189.51.191:2020/${{ secrets.ftp_path }}
         ftp-username: ${{ secrets.ftp_username }}
         ftp-password: test123
         known_hosts: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCs4TnYwvvAXnLBx5Vg/z3i9U7DZlFsbsA1VOhEpegbJP0cz9INdD7GblAkfOR/9u6HxesOfN13GOEXSBf0I9Nhtw/czoRAipSu+jmMTcoQ+JRe5DU2b3mNjewBpYgFwKj3b3V59MfhCPuQbsEesAeokpZEnxmEp6dJrYw2bqatCBZfcFfJe6330yLOUSuJ4igdFFYw/hiCzV5q9QQyYpWuM1raavIOVapEEmfT1NO/64QzQzroqZDywrVU7iCBGfd5sTUnpLm3qAlMWOXEEp5VbfQQEiX00AufvdfdD7c8BXQ34eabPcaqMlAajc5cG0lSKP7RxD7oJ1yDUqXxjWir"
