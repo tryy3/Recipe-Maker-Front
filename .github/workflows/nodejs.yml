@@ -39,7 +39,8 @@ jobs:
     - name: List output files
       run: ls
 
-    - run: mkdir "$HOME/.ssh"
+    - name: Create SSH folder for deploy key
+      run: mkdir "$HOME/.ssh"
     - name: Create SSH deploy key
       run: echo "${{ secrets.ftp_secret }}" >> "$HOME/.ssh/ftp_publish_key"
 
@@ -49,5 +50,5 @@ jobs:
         ftp-server: sftp://ns12.inleed.net:2020/${{ secrets.ftp_path }}
         ftp-username: ${{ secrets.ftp_username }}
         ftp-password: test123
-        local-dir: build
+        local-dir: dist
         git-ftp-args: --insecure --key "$HOME/.ssh/ftp_publish_key"
