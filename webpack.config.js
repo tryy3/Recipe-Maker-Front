@@ -4,7 +4,6 @@ var webpack = require("webpack");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 function resolve(dir) {
-    console.log("test", __dirname);
     return path.join(__dirname, dir);
 }
 
