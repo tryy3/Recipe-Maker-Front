@@ -16,16 +16,37 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: '12.x'
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
     - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
-      env:
-        CI: true
+    
+    - name: Build project
+      run: npm run build --if-present
+    
+    - name: Running tests
+      run: npm test
+        env:
+          CI: true
+
+    - name: List output files
+      run: ls
+
+    - name: Create SSH deploy key
+      run: echo ${{ secrets.ftp_secret }} >> "$HOME/.ssh/ftp_publish_key"
+
+    - name: FTP-Deploy-Action
+      uses: SamKirkland@FTP-Deploy-Action@3.0.0
+      with:
+        ftp-server: sftp://ns12.inleed.net:2020/${{ secrets.ftp_path }}
+        ftp-username: ${{ secrets.ftp_username }}
+        ftp-password: test123
+        local-dir: build
+        git-ftp-args: --insecure --key "$HOME/.ssh/ftp_publish_key"
