@@ -39,7 +39,7 @@ jobs:
     - name: List output files
       run: ls
 
-    - run: mkdir "$HOME/.ssh/ftp_publish_key"
+    - run: mkdir "$HOME/.ssh"
     - name: Create SSH deploy key
       run: echo "${{ secrets.ftp_secret }}" >> "$HOME/.ssh/ftp_publish_key"
 
