@@ -40,7 +40,7 @@ jobs:
       run: ls
 
     - name: Create SSH deploy key
-      run: echo ${{ secrets.ftp_secret }} >> "$HOME/.ssh/ftp_publish_key"
+      run: echo "${{ secrets.ftp_secret }}" >> "$HOME/.ssh/ftp_publish_key"
 
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
