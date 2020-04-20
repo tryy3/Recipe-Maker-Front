@@ -22,14 +22,23 @@ jobs:
         fetch-depth: 2
 
     - name: List output files
-      run: ls
+      run: ls -al
 
     - name: Create SSH folder for deploy key
       run: mkdir "$HOME/.ssh"
+
+    - name: List output files
+      run: ls -al $HOME
     - name: Create SSH private key
       run: echo "${{ secrets.ftp_private_key }}" >> "$HOME/.ssh/ftp_key"
+
+    - name: List output files
+      run: ls -al $HOME/.ssh
     - name: Create SSH public key
       run: echo "${{ secrets.ftp_public_key }}" >> "$HOME/.ssh/ftp_key.pub"
+
+    - name: List output files
+      run: ls -al $HOME/.ssh
     
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
@@ -38,4 +47,4 @@ jobs:
         ftp-username: ${{ secrets.ftp_username }}
         ftp-password: test123
         known_hosts: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCs4TnYwvvAXnLBx5Vg/z3i9U7DZlFsbsA1VOhEpegbJP0cz9INdD7GblAkfOR/9u6HxesOfN13GOEXSBf0I9Nhtw/czoRAipSu+jmMTcoQ+JRe5DU2b3mNjewBpYgFwKj3b3V59MfhCPuQbsEesAeokpZEnxmEp6dJrYw2bqatCBZfcFfJe6330yLOUSuJ4igdFFYw/hiCzV5q9QQyYpWuM1raavIOVapEEmfT1NO/64QzQzroqZDywrVU7iCBGfd5sTUnpLm3qAlMWOXEEp5VbfQQEiX00AufvdfdD7c8BXQ34eabPcaqMlAajc5cG0lSKP7RxD7oJ1yDUqXxjWir"
-        git-ftp-args: --force --insecure --key "$HOME/.ssh/ftp_key" --pubkey "$HOME/.ssh/ftp_key.pub"
+        git-ftp-args: --insecure --key "$HOME/.ssh/ftp_key" --pubkey "$HOME/.ssh/ftp_key.pub"
