@@ -46,6 +46,7 @@ jobs:
     - name: Create SSH public key
       run: echo "${{ secrets.ftp_public_key }}" >> "$HOME/.ssh/ftp_key.pub"
     
+    - run: dig +short myip.opendns.com @resolver1.opendns.com
     - run: ping ns12.inleed.net -c 4
     
     - name: FTP-Deploy-Action
