@@ -11,15 +11,15 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -45,9 +45,6 @@ jobs:
       run: echo "${{ secrets.ftp_private_key }}" >> "$HOME/.ssh/ftp_key"
     - name: Create SSH public key
       run: echo "${{ secrets.ftp_public_key }}" >> "$HOME/.ssh/ftp_key.pub"
-    
-    - run: ping google.com -c 4
-    - run: ping ns12.inleed.net -c 4
     
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
