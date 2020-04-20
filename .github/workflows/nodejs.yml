@@ -35,18 +35,3 @@ jobs:
       run: npm test
       env:
         CI: true
-
-    - name: Create SSH folder for deploy key
-      run: mkdir "$HOME/.ssh"
-      
-    - name: Create SSH private key
-      run: echo "${{ secrets.ftp_private_key }}" >> "$HOME/.ssh/ftp_key"
-
-    - name: Create SSH public key
-      run: echo "${{ secrets.ftp_public_key }}" >> "$HOME/.ssh/ftp_key.pub"
-    
-    - run: ls -al
-    - run: ls -al dist
-    
-    - name: Uploading files
-      run: git ftp push --force --auto-init --verbose --user ${{ secrets.ftp_username }} --passwd ${{ secrets.ftp_password }} --syncroot ./dist --insecure --key $HOME/.ssh/ftp_key --pubkey $HOME/.ssh/ftp_key.pub sftp://185.189.51.191:2020${{ secrets.ftp_path }}
