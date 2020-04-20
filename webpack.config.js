@@ -4,14 +4,13 @@ var webpack = require("webpack");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 function resolve(dir) {
-    console.log("test", __dirname);
     return path.join(__dirname, dir);
 }
 
 module.exports = {
     entry: ["./src/main.js"],
     output: {
-        path: path.resolve(__dirname, "./dist"),
+        path: resolve(dist),
         publicPath: "/dist/",
         filename: "build.js"
     },
