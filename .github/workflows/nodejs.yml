@@ -46,6 +46,7 @@ jobs:
       run: echo "${{ secrets.ftp_public_key }}" >> "$HOME/.ssh/ftp_key.pub"
     
     - run: ls -al
+    - run: ls -al dist
     
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
