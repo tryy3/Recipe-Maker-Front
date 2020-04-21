@@ -13,10 +13,14 @@
         "build-tailwind": "npx tailwindcss build ./tailwind.css -o src/styles/output.css"
     },
     "dependencies": {
+        "@auth0/auth0-spa-js": "^1.7.0",
+        "@authpack/sdk": "^0.8.18",
+        "@authpack/vue": "^0.3.14",
         "apollo-boost": "^0.4.7",
         "apollo-cache-inmemory": "^1.6.5",
         "apollo-client": "^2.6.8",
         "apollo-link": "^1.2.14",
+        "apollo-link-context": "^1.0.20",
         "apollo-link-error": "^1.1.13",
         "apollo-link-http": "^1.5.17",
         "apollo-upload-client": "^13.0.0",

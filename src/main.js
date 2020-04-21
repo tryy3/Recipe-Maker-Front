@@ -9,9 +9,13 @@ import VueToast from "vue-toast-notification";
 import Cloudinary from "cloudinary-vue";
 
 // Internal imports
-import routes from "./routes";
+import routes from "./routes/";
 import App from "./App";
 import apolloClient from "./apolloClient";
+
+// Import auth.
+import { domain, clientId, audience } from "./auth/auth_config.json";
+import { Auth0Plugin, getInstance } from "./auth";
 
 // Import global css styles
 import "vue-toast-notification/dist/theme-default.css";
@@ -25,6 +29,18 @@ Vue.use(VueToast);
 Vue.use(Cloudinary, {
     configuration: {
         cloudName: "ddsiiisuy"
+    }
+});
+Vue.use(Auth0Plugin, {
+    domain,
+    clientId,
+    audience,
+    onRedirectCallback: appState => {
+        router.push(
+            appState && appState.targetUrl
+                ? appState.targetUrl
+                : window.location.pathname
+        );
     }
 });
 

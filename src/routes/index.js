@@ -1,5 +1,7 @@
-const Foo = { template: "<div>foo</div>" };
-const Bar = { template: "<div>bar</div>" };
+// Middlewares
+import { authGuard } from "@/auth/authGuard";
+
+import Profile from "@/pages/user/Profile";
 
 import Ingredients from "@/pages/ingredients/Ingredients.vue";
 import UpdateIngredient from "@/pages/ingredients/UpdateIngredient.vue";
@@ -10,31 +12,45 @@ import UpdateRecipe from "@/pages/recipes/UpdateRecipe.vue";
 import CreateRecipe from "@/pages/recipes/CreateRecipe.vue";
 
 export default [
+    // User routes
+    {
+        path: "/profile",
+        name: "profile",
+        component: Profile,
+        beforeEnter: authGuard
+    },
+
     // Ingredients routes
     {
         path: "/ingredients",
-        component: Ingredients
+        component: Ingredients,
+        beforeEnter: authGuard
     },
     {
         path: "/ingredient/create",
-        component: CreateIngredient
+        component: CreateIngredient,
+        beforeEnter: authGuard
     },
     {
         path: "/ingredient/:ID",
-        component: UpdateIngredient
+        component: UpdateIngredient,
+        beforeEnter: authGuard
     },
 
     // Recipes routes
     {
         path: "/recipes",
-        component: Recipes
+        component: Recipes,
+        beforeEnter: authGuard
     },
     {
         path: "/recipe/create",
-        component: CreateRecipe
+        component: CreateRecipe,
+        beforeEnter: authGuard
     },
     {
         path: "/recipe/:ID",
-        component: UpdateRecipe
+        component: UpdateRecipe,
+        beforeEnter: authGuard
     }
 ];

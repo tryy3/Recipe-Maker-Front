@@ -48,6 +48,29 @@
                         >Ingredients</router-link
                     >
                 </div>
+                <div class="text-smn" v-if="!$auth.loading">
+                    <button
+                        class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                        v-if="!$auth.isAuthenticated"
+                        @click="login"
+                    >
+                        Log in
+                    </button>
+
+                    <router-link
+                        v-if="$auth.isAuthenticated"
+                        to="/profile"
+                        class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                        >Profile</router-link
+                    >
+                    <button
+                        class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                        v-if="$auth.isAuthenticated"
+                        @click="logout"
+                    >
+                        Log out
+                    </button>
+                </div>
             </div>
         </nav>
         <router-view></router-view>
@@ -59,6 +82,16 @@ export default {
     name: "app",
     data() {
         return {};
+    },
+    methods: {
+        login() {
+            this.$auth.loginWithRedirect();
+        },
+        logout() {
+            this.$auth.logout({
+                returnTo: window.location.origin
+            });
+        }
     }
 };
 </script>
