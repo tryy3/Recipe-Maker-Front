@@ -13,13 +13,20 @@
             </div>
         </div>
         <div v-if="!$apollo.loading">
+            <div class="container mx-auto flex flex-wrap justify-center">
+                <router-link
+                    to="/recipe/create"
+                    class="text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline bg-green-500 hover:bg-green-700 my-4"
+                    >Create a new recipe</router-link
+                >
+            </div>
             <transition-group
-                name="ingredient-list-item"
+                name="recipe-list-item"
                 class="container mx-auto flex flex-wrap justify-center"
             >
                 <div
-                    v-for="(ingredient, index) in ingredients"
-                    :key="ingredient.id"
+                    v-for="(recipe, index) in recipes"
+                    :key="recipe.id"
                     class="w-1/3 transition duration-1000 ease-in-out"
                 >
                     <div
@@ -27,11 +34,11 @@
                     >
                         <i
                             class="fas fa-times text-red-600 text-3xl cursor-pointer hover:text-red-700 transition-colors duration-300 ease-in-out absolute right-0 top-0 p-2"
-                            @click="deleteIngredient"
-                            :id="ingredient.id"
+                            @click="deleteRecipe"
+                            :id="recipe.id"
                             :index="index"
                         ></i>
-                        <router-link v-bind:to="'/ingredient/' + ingredient.id">
+                        <router-link v-bind:to="'/recipe/' + recipe.id">
                             <!--div v-for="(image, index) in images" :key="index">
                             <cld-image
                                 :publicId="image"
@@ -40,19 +47,21 @@
                             />
                         </div-->
                             <cld-image
-                                :publicId="ingredient.image"
+                                :publicId="
+                                    recipe.image || '/samples/animals/cat.jpg'
+                                "
                                 width="auto"
                                 crop="scale"
                             />
                             <div class="px-6">
                                 <div class="py-4">
                                     <div class="font-bold text-xl mb-2">
-                                        {{ ingredient.title }}
+                                        {{ recipe.title }}
                                     </div>
                                     <p
                                         class="text-gray-700 text-base break-words"
                                     >
-                                        {{ ingredient.description }}
+                                        {{ recipe.description }}
                                     </p>
                                 </div>
                                 <div class="py-4">
@@ -80,24 +89,21 @@
 </template>
 
 <script>
-import {
-    FindAllIngredients,
-    DeleteIngredient
-} from "@/graphql/ingredients.gql";
+import { FindAllRecipes, DeleteRecipe } from "@/graphql/recipes.gql";
 
 export default {
     methods: {
-        deleteIngredient(e) {
+        deleteRecipe(e) {
             var id = e.target.getAttribute("id");
             this.$apollo
                 .mutate({
-                    mutation: DeleteIngredient,
+                    mutation: DeleteRecipe,
                     variables: {
                         id
                     }
                 })
                 .then(({ data }) => {
-                    this.ingredients.splice(e.target.getAttribute("index"), 1);
+                    this.recipes.splice(e.target.getAttribute("index"), 1);
                     this.$toast.success("Deleted");
                 })
                 .catch(err => {
@@ -107,18 +113,18 @@ export default {
         }
     },
     apollo: {
-        ingredients: FindAllIngredients
+        recipes: FindAllRecipes
     }
 };
 </script>
 
 <style>
-.ingredient-list-item-enter, .ingredient-list-item-leave-to
-/* .ingredient-list-item-leave-active below version 2.1.8 */ {
+.recipe-list-item-enter, .recipe-list-item-leave-to
+/* .recipe-list-item-leave-active below version 2.1.8 */ {
     opacity: 0;
     transform: translateY(30px);
 }
-.ingredient-list-item-leave-active {
+.recipe-list-item-leave-active {
     position: absolute;
 }
 </style>

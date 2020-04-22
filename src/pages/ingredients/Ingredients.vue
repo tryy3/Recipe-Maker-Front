@@ -13,6 +13,13 @@
             </div>
         </div>
         <div v-if="!$apollo.loading">
+            <div class="container mx-auto flex flex-wrap justify-center">
+                <router-link
+                    to="/ingredient/create"
+                    class="text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline bg-green-500 hover:bg-green-700 my-4"
+                    >Create a new ingredient</router-link
+                >
+            </div>
             <transition-group
                 name="ingredient-list-item"
                 class="container mx-auto flex flex-wrap justify-center"

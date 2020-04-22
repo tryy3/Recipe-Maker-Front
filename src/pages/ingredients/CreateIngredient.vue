@@ -57,10 +57,11 @@ export default {
                     }
                 })
                 .then(({ data }) => {
+                    console.log(data);
                     this.creating = false;
                     this.$toast.success("Created");
                     this.$router.push(
-                        "/ingredient/" + data.createIngredient.id
+                        "/ingredient/" + data.insert_ingredients.returning[0].id
                     );
                 })
                 .catch(err => {

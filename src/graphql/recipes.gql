@@ -56,6 +56,23 @@ input RecipeIngredientUpdateInput {
     measurementValue: Float
 }
 
+query FindAllRecipes {
+    recipes {
+        id
+        description
+        title
+        image
+        ingredients {
+            id
+            title
+            description
+            image
+            measurementType
+            measurementValue
+        }
+    }
+}
+
 query FindRecipeWithID($id: String!) {
     recipe(id: $id) {
         id
@@ -96,6 +113,10 @@ mutation UpdateRecipe($id: ID!, $recipe: RecipeUpdateInput!) {
             measurementValue
         }
     }
+}
+
+mutation DeleteRecipe($id: ID!) {
+    deleteRecipe(id: $id)
 }
 
 mutation AddRecipeIngredient($recipeID: ID!, $ingredientID: ID!) {

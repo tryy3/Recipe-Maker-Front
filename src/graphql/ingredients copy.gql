@@ -1,10 +1,4 @@
-input ingredients_insert_input {
-    description: String
-    title: String
-    image: String
-}
-
-input ingredients_set_input {
+input IngredientInput {
     description: String
     title: String
     image: String
@@ -30,7 +24,7 @@ query FindAllIngredients {
 }
 
 query FindIngredientWithID($id: String!) {
-    ingredients(where: { id: { _eq: $id } }) {
+    ingredient(id: $id) {
         id
         description
         title
@@ -38,22 +32,21 @@ query FindIngredientWithID($id: String!) {
     }
 }
 
-mutation UpdateIngredient($id: String!, $ingredient: ingredients_set_input!) {
-    update_ingredients(where: { id: { _eq: $id } }, _set: $ingredient) {
-        returning {
-            id
-            description
-            title
-            image
-        }
+mutation UpdateIngredient($id: ID!, $ingredient: IngredientInput!) {
+    updateIngredient(id: $id, ingredient: $ingredient) {
+        id
+        description
+        title
+        image
     }
 }
 
-mutation CreateIngredient($ingredient: ingredients_insert_input!) {
-    insert_ingredients(objects: [$ingredient]) {
-        returning {
-            id
-        }
+mutation CreateIngredient($ingredient: IngredientInput!) {
+    createIngredient(ingredient: $ingredient) {
+        id
+        description
+        title
+        image
     }
 }
 

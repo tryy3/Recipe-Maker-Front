@@ -10,7 +10,6 @@ const client = new ApolloClient({
     link: ApolloLink.from([
         setContext(async (_, { headers }) => {
             const authorization = await getAuth();
-            console.log(authorization);
             const authorizationHeader = authorization ? { authorization } : {};
             return {
                 headers: {
@@ -31,16 +30,14 @@ const client = new ApolloClient({
         }),
         createUploadLink({
             //uri: "https://recipe-maker-backend.tryy3.us/query"
-            uri: "http://localhost:8090/query"
+            //uri: "http://localhost:8090/query"
+            uri: "https://recipe-maker-backend.herokuapp.com/v1/graphql"
         })
     ]),
     cache: new InMemoryCache()
 });
 
 const getAuth = async () => {
-    console.log(getInstance());
-    console.log(getInstance().auth0Client);
-    console.log(getInstance().getTokenSilently());
     const token = await getInstance().getTokenSilently();
     return token ? `Bearer ${token}` : "";
 };

@@ -1,5 +1,5 @@
 {
     "domain": "dev-xhmwh1tu.eu.auth0.com",
     "clientId": "qxjwPeGIn0UeFsw6Ki4dDWsNlHdFSN00",
-    "audience": "http://localhost:8090"
+    "audience": "hasura"
 }
