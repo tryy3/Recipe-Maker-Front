@@ -1,14 +1,5 @@
 <template>
     <div>
-        <input
-            type="file"
-            :name="name"
-            class="hidden"
-            accept="image/*"
-            :multiple="!multiple"
-            @change="attemptFileUpload"
-        />
-
         <div v-for="(image, index) in images" :key="index">
             <cld-image :publicId="image || ''" width="auto" crop="scale" />
         </div>
@@ -38,6 +29,7 @@
                 </div>
             </button>
         </div>
+        {{/* TODO: Change this to a better include */}}
     </div>
 </template>
 
@@ -82,41 +74,31 @@ export default {
         }
     },
     data() {
+        let widget = cloudinary.createUploadWidget(
+            {
+                cloudName: "ddsiiisuy",
+                uploadPreset: "lffykqwj"
+            },
+            (error, result) => {
+                if (error) {
+                    this.$emit("failedFileUpload", error);
+                } else {
+                    if (result) {
+                        if (result.event === "success") {
+                            this.$emit("successFileUpload", result.info);
+                        }
+                    }
+                }
+            }
+        );
         return {
+            widget,
             uploading: false
         };
     },
     methods: {
         openFileUpload() {
-            // TODO: Maybe some events here? BeforeClick, AfterClick....
-            document
-                .querySelector(
-                    "input[type='file'][name='" + this.$props.name + "']"
-                )
-                .click();
-        },
-        attemptFileUpload(e) {
-            this.uploading = true;
-            const fileList = e.target.files;
-            this.$emit("beforeFileUpload", fileList);
-
-            this.$apollo
-                .mutate({
-                    mutation: UploadFiles,
-                    variables: {
-                        files: fileList
-                    }
-                })
-                .then(data => {
-                    this.$emit("successFileUpload", data);
-                })
-                .catch(err => {
-                    this.$emit("failedFileUpload", err, fileList);
-                })
-                .finally(() => {
-                    this.$emit("afterFileUploaded", fileList);
-                    this.uploading = false;
-                });
+            this.widget.open();
         }
     }
 };

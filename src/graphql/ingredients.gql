@@ -57,12 +57,8 @@ mutation CreateIngredient($ingredient: ingredients_insert_input!) {
     }
 }
 
-mutation DeleteIngredient($id: ID!) {
-    deleteIngredient(id: $id)
-}
-
-mutation UploadFiles($files: [Upload!]!) {
-    uploadFiles(files: $files) {
-        id
+mutation DeleteIngredient($id: String!) {
+    delete_ingredients(where: { id: { _eq: $id } }) {
+        affected_rows
     }
 }

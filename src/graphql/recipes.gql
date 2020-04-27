@@ -39,15 +39,15 @@ type Recipe {
     ingredients: [RecipeIngredient]
 }
 
-input RecipeInput {
-    title: String
+input recipes_insert_input {
     description: String
+    title: String
 }
 
-input RecipeUpdateInput {
-    title: String
+input recipe_set_input {
     description: String
-    ingredients: [RecipeIngredientUpdateInput]
+    title: String
+    image: String
 }
 
 input RecipeIngredientUpdateInput {
@@ -58,43 +58,49 @@ input RecipeIngredientUpdateInput {
 
 query FindAllRecipes {
     recipes {
-        id
         description
-        title
+        id
         image
-        ingredients {
+        title
+        recipeIngredients {
             id
-            title
-            description
-            image
             measurementType
             measurementValue
+            ingredient {
+                description
+                id
+                image
+                title
+            }
         }
     }
 }
 
 query FindRecipeWithID($id: String!) {
-    recipe(id: $id) {
-        id
+    recipes(where: { id: { _eq: $id } }, limit: 1) {
         description
-        title
+        id
         image
-        ingredients {
+        title
+        recipeIngredients {
             id
-            title
-            description
-            image
             measurementType
             measurementValue
+            ingredient {
+                description
+                image
+                id
+                title
+            }
         }
     }
 }
 
-mutation CreateRecipe($recipe: RecipeInput!) {
-    createRecipe(recipe: $recipe) {
-        id
-        description
-        title
+mutation CreateRecipe($recipe: recipes_insert_input!) {
+    insert_recipes(objects: [$recipe]) {
+        returning {
+            id
+        }
     }
 }
 
@@ -119,10 +125,26 @@ mutation DeleteRecipe($id: ID!) {
     deleteRecipe(id: $id)
 }
 
-mutation AddRecipeIngredient($recipeID: ID!, $ingredientID: ID!) {
-    addRecipeIngredient(recipeID: $recipeID, ingredientID: $ingredientID)
+mutation AddRecipeIngredient($recipeId: String!, $ingredientId: String!) {
+    insert_recipeIngredients(
+        objects: [{ ingredientId: $ingredientId, recipeId: $recipeId }]
+    ) {
+        returning {
+            id
+            measurementType
+            measurementValue
+            ingredient {
+                description
+                image
+                id
+                title
+            }
+        }
+    }
 }
 
-mutation RemoveRecipeIngredient($recipeID: ID!, $ingredientID: ID!) {
-    removeRecipeIngredient(recipeID: $recipeID, ingredientID: $ingredientID)
+mutation RemoveRecipeIngredient($recipeIngredientId: String!) {
+    delete_recipeIngredients(where: { id: { _eq: $recipeIngredientId } }) {
+        affected_rows
+    }
 }

@@ -63,9 +63,9 @@ export default {
         ingredient: Object
     },
     methods: {
-        successFileUpload: function({ data }) {
+        successFileUpload: function(data) {
             // TODO: Redo this to support multiple images
-            var image = data.uploadFiles[0].id;
+            var image = data.public_id;
 
             this.$apollo
                 .mutate({
@@ -84,8 +84,8 @@ export default {
                     this.$toast.error(err);
                 });
         },
-        failedFileUpload: function(err, files) {
-            this.$toast.error(err);
+        failedFileUpload: function({ statusText }) {
+            this.$toast.error(statusText);
         }
     }
 };

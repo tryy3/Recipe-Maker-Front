@@ -94,7 +94,8 @@ export default {
                 return {
                     id: this.$route.params.ID
                 };
-            }
+            },
+            update: data => data.recipes[0]
         }
     },
     data() {

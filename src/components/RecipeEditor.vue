@@ -56,8 +56,8 @@
                                 <draggable
                                     class=" "
                                     :list="recipeIngredients"
-                                    group="people"
-                                    @change="changedIngredient"
+                                    group="{name: 'recipeIngredients', pull: false, put: false}"
+                                    @end="dragRemoveIngredient"
                                 >
                                     <transition-group
                                         name="list-group"
@@ -66,7 +66,8 @@
                                         <div
                                             class="list-group-item transition-opacity duration-700 ease-in-out"
                                             v-for="element in recipeIngredients"
-                                            :key="element.title"
+                                            :key="element.id"
+                                            :id="element.id"
                                         >
                                             <i
                                                 class="fas fa-times text-red-600 text-3xl cursor-pointer hover:text-red-700 transition-colors duration-300 ease-in-out absolute right-0 top-0 p-2"
@@ -76,7 +77,8 @@
                                             <div>
                                                 <cld-image
                                                     :publicId="
-                                                        element.image || ''
+                                                        element.ingredient
+                                                            .image || ''
                                                     "
                                                     width="auto"
                                                     crop="scale"
@@ -84,7 +86,9 @@
                                             </div>
                                             <div class="mt-4">
                                                 <h3 class="font-bold text-lg">
-                                                    {{ element.title }}
+                                                    {{
+                                                        element.ingredient.title
+                                                    }}
                                                 </h3>
                                             </div>
                                             <div class="mt-4">
@@ -173,20 +177,22 @@
                             <draggable
                                 class="list-group"
                                 :list="listIngredients"
-                                group="people"
+                                group="{name: 'ingredients', pull: false, put: false}"
+                                @end="dragAddIngredient"
                             >
                                 <transition-group name="list-group" class="">
                                     <div
                                         class="list-group-item transition duration-700 ease-in-out grid grid-cols-5"
                                         v-for="element in listIngredients"
                                         :key="element.id"
+                                        :id="element.id"
                                     >
                                         <div
                                             class="absolute right-0 top-0 bottom-0 flex flex-wrap content-center"
                                         >
                                             <i
                                                 class="fas fa-plus text-green-600 text-2xl cursor-pointer hover:text-green-700 transition-colors duration-300 ease-in-out p-2 align-middle"
-                                                @click="addIngredientList"
+                                                @click="clickedAddIngredient"
                                                 :id="element.id"
                                             ></i>
                                         </div>
@@ -259,88 +265,122 @@ export default {
     methods: {
         successFileUpload({ data }) {
             // TODO: Redo this to support multiple images
-            /*var image = data.uploadFiles[0].id;
-
-            this.$apollo
-                .mutate({
-                    mutation: UpdateRecipe,
-                    variables: {
-                        id: this.$route.params.ID,
-                        recipe: {
-                            image
-                        }
-                    }
-                })
-                .then(data => {
-                    this.$toast.success("Uploaded");
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.$toast.error(err);
-                });*/
         },
         failedFileUpload(err, files) {
             this.$toast.error(err);
         },
-        changedIngredient({ added, removed }) {
-            console.log(arguments);
-            if (typeof added !== "undefined") {
+        addRecipeIngredient({ recipeId, ingredientId }) {
+            return new Promise((resolve, reject) => {
                 this.$apollo
                     .mutate({
                         mutation: AddRecipeIngredient,
                         variables: {
-                            recipeID: this.recipe.id,
-                            ingredientID: added.element.id
+                            recipeId,
+                            ingredientId
                         }
                     })
-                    .then(data => {
+                    .then(({ data }) => {
+                        var ingredient =
+                            data.insert_recipeIngredients.returning[0];
                         this.$toast.success("Added ingredient");
+                        resolve(ingredient);
                     })
                     .catch(err => {
                         this.$toast.error(err.message);
+                        reject(err);
                     });
-            }
-            if (typeof removed !== "undefined") {
+            });
+        },
+        deleteRecipeIngredient({ recipeIngredientId }) {
+            return new Promise((resolve, reject) => {
                 this.$apollo
                     .mutate({
                         mutation: RemoveRecipeIngredient,
                         variables: {
-                            recipeID: this.recipe.id,
-                            ingredientID: removed.element.id
+                            recipeIngredientId
                         }
                     })
                     .then(data => {
                         this.$toast.success("Removed ingredient");
+                        resolve(data);
                     })
                     .catch(err => {
                         this.$toast.error(err.message);
+                        reject(err);
                     });
+            });
+        },
+        async dragRemoveIngredient(element) {
+            try {
+                console.log(arguments);
+                const id = element.item.getAttribute("id");
+                let recipeIngredient = await this.deleteRecipeIngredient({
+                    recipeIngredientId: id
+                });
+                for (var i in this.recipe.recipeIngredients) {
+                    if (this.recipe.recipeIngredients[i].id == id) {
+                        this.recipe.recipeIngredients.splice(i, 1);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+                return false;
             }
         },
-        addIngredientList(e) {
-            let id = e.target.getAttribute("id");
-            let ingredient = this.listIngredients.find(e => e.id == id);
-            this.changedIngredient({ added: { element: ingredient } });
-            this.recipe.ingredients.push(ingredient);
+        async dragAddIngredient(element) {
+            try {
+                let recipeIngredient = await this.addRecipeIngredient({
+                    recipeId: this.recipe.id,
+                    ingredientId: element.item.getAttribute("id")
+                });
+                console.log(recipeIngredient);
+                this.recipe.recipeIngredients.push(recipeIngredient);
+            } catch (e) {
+                console.log(e);
+                return false;
+            }
         },
-        deleteIngredientList(e) {
-            let id = e.target.getAttribute("id");
-            for (const i in this.recipe.ingredients) {
-                let ingredient = this.recipe.ingredients[i];
-                if (ingredient.id == id) {
-                    this.changedIngredient({
-                        removed: { element: ingredient }
-                    });
-                    this.recipe.ingredients.splice(i, 1);
-                    return;
+        async clickedAddIngredient(e) {
+            try {
+                let id = e.target.getAttribute("id");
+                let ingredient = this.listIngredients.find(e => e.id == id);
+                let recipeIngredient = await this.addRecipeIngredient({
+                    recipeId: this.recipe.id,
+                    ingredientId: ingredient.id
+                });
+                console.log(recipeIngredient);
+                this.recipe.recipeIngredients.push(recipeIngredient);
+            } catch (e) {
+                // TODO Should we handle something here?
+                console.log(e);
+            }
+        },
+        async deleteIngredientList(e) {
+            try {
+                let id = e.target.getAttribute("id");
+                for (const i in this.recipe.recipeIngredients) {
+                    let ingredient = this.recipe.recipeIngredients[i];
+                    if (ingredient.id == id) {
+                        await this.deleteRecipeIngredient({
+                            recipeIngredientId: ingredient.id
+                        });
+                        this.recipe.recipeIngredients.splice(i, 1);
+                        return;
+                    }
                 }
+            } catch (e) {
+                console.log();
             }
         }
     },
     computed: {
         listIngredients() {
             if (typeof this.ingredients === "undefined") return [];
-            const recipeIngredients = this.recipe.ingredients.map(o => o.id);
+            //if (typeof this.recipe.recipeIngredients === "undefined") return [];
+            const recipeIngredients = this.recipe.recipeIngredients.map(
+                o => o.ingredient.id
+            );
 
             return this.ingredients.filter(
                 o => !recipeIngredients.includes(o.id)
@@ -353,16 +393,10 @@ export default {
         }
     },
     data() {
-        let recipeIngredients = this.recipe.ingredients || [];
+        let recipeIngredients = this.recipe.recipeIngredients || [];
         return {
             recipeIngredients,
-            measurementTypes,
-            list1: [
-                { name: "John", id: 1 },
-                { name: "Joao", id: 2 },
-                { name: "Jean", id: 3 },
-                { name: "Gerard", id: 4 }
-            ]
+            measurementTypes
         };
     }
 };

@@ -57,7 +57,6 @@ export default {
                     }
                 })
                 .then(({ data }) => {
-                    console.log(data);
                     this.creating = false;
                     this.$toast.success("Created");
                     this.$router.push(

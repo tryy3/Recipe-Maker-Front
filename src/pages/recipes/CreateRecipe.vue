@@ -58,7 +58,9 @@ export default {
                 .then(({ data }) => {
                     this.creating = false;
                     this.$toast.success("Created");
-                    this.$router.push("/recipe/" + data.createRecipe.id);
+                    this.$router.push(
+                        "/recipe/" + data.insert_recipes.returning[0].id
+                    );
                 })
                 .catch(err => {
                     this.creating = false;
