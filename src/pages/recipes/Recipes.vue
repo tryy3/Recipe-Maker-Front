@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="loading-box" v-if="$apollo.loading">
+        <div class="loading-box" v-if="apolloLoading">
             <div class="flex content-center flex-wrap">
                 <div class="w-full text-center">
                     <i
@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="!$apollo.loading">
+        <div v-if="!apolloLoading">
             <div class="container mx-auto flex flex-wrap justify-center">
                 <router-link
                     to="/recipe/create"
@@ -84,16 +84,29 @@
                 </div>
             </transition-group>
         </div>
-        <div v-if="$apollo.loading">Loading...</div>
+        <div v-if="apolloLoading">Loading...</div>
     </div>
 </template>
 
 <script>
 import { FindAllRecipes, DeleteRecipe } from "@/graphql/recipes.gql";
+import { useToast } from 'vue-toastification';
 
 export default {
+    setup() {
+        const toast = useToast();
+        return { toast }
+    },
+    computed: {
+        apolloLoading() {
+            if ((typeof this.$apollo) == "undefined") return false;
+            if ((typeof this.$apollo.loading) == "undefined") return false;
+            return this.$apollo.loading;
+        }
+    },
     methods: {
         deleteRecipe(e) {
+            console.log(this);
             var id = e.target.getAttribute("id");
             this.$apollo
                 .mutate({
@@ -104,11 +117,11 @@ export default {
                 })
                 .then(({ data }) => {
                     this.recipes.splice(e.target.getAttribute("index"), 1);
-                    this.$toast.success("Deleted");
+                    this.toast.success("Deleted");
                 })
                 .catch(err => {
                     console.log(err);
-                    this.$toast.error(err);
+                    this.toast.error(err);
                 });
         }
     },

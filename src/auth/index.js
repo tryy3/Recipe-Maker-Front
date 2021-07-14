@@ -1,7 +1,10 @@
 "use strict";
 
-import Vue from "vue";
+// import Vue from "vue";
+import { createApp } from 'vue';
 import createAuth0Client from "@auth0/auth0-spa-js";
+
+const app = createApp({});
 
 /** Define a default action to perform after authentication */
 const DEFAULT_REDIRECT_CALLBACK = () =>
@@ -125,7 +128,7 @@ export const useAuth0 = ({
 
 // Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
-    install(Vue, options) {
-        Vue.prototype.$auth = useAuth0(options);
+    install(app, options) {
+        app.prototype.$auth = useAuth0(options);
     }
 };

@@ -1,5 +1,5 @@
 // Middlewares
-import { authGuard } from "@/auth/authGuard";
+import { routeGuard, logoutAuth } from "@/auth/vue3_auth";
 
 import Profile from "@/pages/user/Profile";
 
@@ -17,40 +17,40 @@ export default [
         path: "/profile",
         name: "profile",
         component: Profile,
-        beforeEnter: authGuard
+        beforeEnter: routeGuard
     },
 
     // Ingredients routes
     {
         path: "/ingredients",
         component: Ingredients,
-        beforeEnter: authGuard
+        beforeEnter: routeGuard
     },
     {
         path: "/ingredient/create",
         component: CreateIngredient,
-        beforeEnter: authGuard
+        beforeEnter: routeGuard
     },
     {
         path: "/ingredient/:ID",
         component: UpdateIngredient,
-        beforeEnter: authGuard
+        beforeEnter: routeGuard
     },
 
     // Recipes routes
     {
         path: "/recipes",
         component: Recipes,
-        beforeEnter: authGuard
+        beforeEnter: routeGuard
     },
     {
         path: "/recipe/create",
         component: CreateRecipe,
-        beforeEnter: authGuard
+        beforeEnter: routeGuard
     },
     {
         path: "/recipe/:ID",
         component: UpdateRecipe,
-        beforeEnter: authGuard
-    }
+        beforeEnter: routeGuard
+    },
 ];

@@ -29,7 +29,6 @@
                 </div>
             </button>
         </div>
-        {{/* TODO: Change this to a better include */}}
     </div>
 </template>
 

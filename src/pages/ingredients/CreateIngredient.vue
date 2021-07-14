@@ -37,8 +37,13 @@
 <script>
 import { CreateIngredient } from "@/graphql/ingredients.gql";
 import IngredientEditor from "@/components/IngredientEditor";
+import { useToast } from 'vue-toastification';
 
 export default {
+    setup() {
+        const toast = useToast();
+        return { toast }
+    },
     components: {
         IngredientEditor
     },
@@ -58,7 +63,7 @@ export default {
                 })
                 .then(({ data }) => {
                     this.creating = false;
-                    this.$toast.success("Created");
+                    this.toast.success("Created");
                     this.$router.push(
                         "/ingredient/" + data.insert_ingredients.returning[0].id
                     );
@@ -66,7 +71,7 @@ export default {
                 .catch(err => {
                     this.creating = false;
                     console.log(err);
-                    this.$toast.error(err);
+                    this.toast.error(err);
                 });
         }
     },

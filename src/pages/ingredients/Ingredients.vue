@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="loading-box" v-if="$apollo.loading">
+        <div class="loading-box" v-if="loading">
             <div class="flex content-center flex-wrap">
                 <div class="w-full text-center">
                     <i
@@ -12,7 +12,10 @@
                 </div>
             </div>
         </div>
-        <div v-if="!$apollo.loading">
+        <div class="error-box" v-if="error">
+            Error: {{error.message}}
+        </div>
+        <div v-if="!loading">
             <div class="container mx-auto flex flex-wrap justify-center">
                 <router-link
                     to="/ingredient/create"
@@ -23,6 +26,7 @@
             <transition-group
                 name="ingredient-list-item"
                 class="container mx-auto flex flex-wrap justify-center"
+                tag="div"
             >
                 <div
                     v-for="(ingredient, index) in ingredients"
@@ -46,11 +50,12 @@
                                 crop="scale"
                             />
                         </div-->
-                            <cld-image
+                            <!-- <cld-image
                                 :publicId="ingredient.image"
                                 width="auto"
                                 crop="scale"
-                            />
+                            /> -->
+                            <img :src="cloudinaryImage(ingredient.image)" />
                             <div class="px-6">
                                 <div class="py-4">
                                     <div class="font-bold text-xl mb-2">
@@ -82,7 +87,7 @@
                 </div>
             </transition-group>
         </div>
-        <div v-if="$apollo.loading">Loading...</div>
+        <div v-if="loading">Loading...</div>
     </div>
 </template>
 
@@ -91,8 +96,18 @@ import {
     FindAllIngredients,
     DeleteIngredient
 } from "@/graphql/ingredients.gql";
+import { useToast } from 'vue-toastification';
+import { useQuery, useResult } from '@vue/apollo-composable';
 
 export default {
+    setup() {
+        const toast = useToast();
+
+        const { result, loading, error } = useQuery(FindAllIngredients);
+        const ingredients = useResult(result, null, data => data.ingredients);
+
+        return { toast, ingredients, error, loading }
+    },
     methods: {
         deleteIngredient(e) {
             var id = e.target.getAttribute("id");
@@ -105,16 +120,19 @@ export default {
                 })
                 .then(({ data }) => {
                     this.ingredients.splice(e.target.getAttribute("index"), 1);
-                    this.$toast.success("Deleted");
+                    this.toast.success("Deleted");
                 })
                 .catch(err => {
                     console.log(err);
-                    this.$toast.error(err);
+                    this.toast.error(err);
                 });
+        },
+        cloudinaryImage(image) {
+            const userID = "ddsiiisuy";
+        
+            let url = `https://res.cloudinary.com/${userID}/image/upload/${image}.jpg`;
+            return url
         }
-    },
-    apollo: {
-        ingredients: FindAllIngredients
     }
 };
 </script>

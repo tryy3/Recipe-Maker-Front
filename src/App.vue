@@ -48,24 +48,24 @@
                         >Ingredients</router-link
                     >
                 </div>
-                <div class="text-smn" v-if="!$auth.loading">
+                <div class="text-smn" v-if="!$auth.loading.value">
                     <button
                         class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-                        v-if="!$auth.isAuthenticated"
+                        v-if="!$auth.isAuthenticated.value"
                         @click="login"
                     >
                         Log in
                     </button>
 
                     <router-link
-                        v-if="$auth.isAuthenticated"
+                        v-if="$auth.isAuthenticated.value"
                         to="/profile"
                         class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
                         >Profile</router-link
                     >
                     <button
                         class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-                        v-if="$auth.isAuthenticated"
+                        v-if="$auth.isAuthenticated.value"
                         @click="logout"
                     >
                         Log out
@@ -91,7 +91,7 @@ export default {
             this.$auth.logout({
                 returnTo: window.location.origin
             });
-        }
+        },
     }
 };
 </script>

@@ -230,6 +230,7 @@ import {
 import { FindAllIngredients } from "@/graphql/ingredients.gql";
 import UploadImage from "@/components/UploadImage.vue";
 import Draggable from "vuedraggable";
+import { useToast } from 'vue-toastification';
 
 // TODO: Set the correct name and prefix, maybe rename to shortName?
 const measurementTypes = {
@@ -255,6 +256,10 @@ const measurementTypes = {
 };
 
 export default {
+    setup() {
+        const toast = useToast();
+        return { toast }
+    },
     components: {
         UploadImage,
         Draggable
@@ -267,7 +272,7 @@ export default {
             // TODO: Redo this to support multiple images
         },
         failedFileUpload(err, files) {
-            this.$toast.error(err);
+            this.toast.error(err);
         },
         addRecipeIngredient({ recipeId, ingredientId }) {
             return new Promise((resolve, reject) => {
@@ -282,11 +287,11 @@ export default {
                     .then(({ data }) => {
                         var ingredient =
                             data.insert_recipeIngredients.returning[0];
-                        this.$toast.success("Added ingredient");
+                        this.toast.success("Added ingredient");
                         resolve(ingredient);
                     })
                     .catch(err => {
-                        this.$toast.error(err.message);
+                        this.toast.error(err.message);
                         reject(err);
                     });
             });
@@ -301,11 +306,11 @@ export default {
                         }
                     })
                     .then(data => {
-                        this.$toast.success("Removed ingredient");
+                        this.toast.success("Removed ingredient");
                         resolve(data);
                     })
                     .catch(err => {
-                        this.$toast.error(err.message);
+                        this.toast.error(err.message);
                         reject(err);
                     });
             });

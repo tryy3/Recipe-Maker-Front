@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="loading-box" v-if="$apollo.loading">
+        <div class="loading-box" v-if="apolloLoading">
             <div class="flex content-center flex-wrap">
                 <div class="w-full text-center">
                     <i
@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="!$apollo.loading">
+        <div v-if="!apolloLoading">
             <recipe-editor :recipe="recipe">
                 <div class="py-4 md:w-4/5 mx-auto">
                     <div class="flex items-center justify-between">
@@ -49,10 +49,20 @@
 <script>
 import { FindRecipeWithID, UpdateRecipe } from "@/graphql/recipes.gql";
 import RecipeEditor from "@/components/RecipeEditor";
+import { useToast } from 'vue-toastification';
 
 export default {
+    setup() {
+        const toast = useToast();
+        return { toast }
+    },
     components: {
-        RecipeEditor
+        RecipeEditor,
+        apolloLoading() {
+            if ((typeof this.$apollo) == "undefined") return false;
+            if ((typeof this.$apollo.loading) == "undefined") return false;
+            return this.$apollo.loading;
+        }
     },
     methods: {
         saveRecipe() {
@@ -78,12 +88,12 @@ export default {
                 })
                 .then(data => {
                     this.saving = false;
-                    this.$toast.success("Saved");
+                    this.toast.success("Saved");
                 })
                 .catch(err => {
                     this.saving = false;
                     console.log(err);
-                    this.$toast.error(err);
+                    this.toast.error(err);
                 });
         }
     },

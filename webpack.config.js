@@ -1,7 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
 
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const { VueLoaderPlugin } = require('vue-loader')
 
 function resolve(dir) {
     return path.join(__dirname, dir);
@@ -50,7 +50,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            vue$: "vue/dist/vue.esm.js",
+            vue: '@vue/runtime-dom',
+            //vue$: "vue/dist/vue.esm.js",
             "@": resolve("src")
         },
         extensions: ["*", ".js", ".vue", ".json"]
@@ -63,7 +64,7 @@ module.exports = {
     performance: {
         hints: false
     },
-    devtool: "#eval-source-map"
+    devtool: "eval-source-map"
 };
 
 if (process.env.NODE_ENV === "production") {
