@@ -6,7 +6,7 @@ import { createApp, provide, h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import VueApollo from "vue-apollo";
 import Toast from "vue-toastification";
-import Cloudinary from "cloudinary-vue";
+import Cloudinary from "./plugins/cloudinary";
 import { DefaultApolloClient } from '@vue/apollo-composable'
 
 // Internal imports

@@ -127,12 +127,6 @@ export default {
                     this.toast.error(err);
                 });
         },
-        cloudinaryImage(image) {
-            const userID = "ddsiiisuy";
-        
-            let url = `https://res.cloudinary.com/${userID}/image/upload/${image}.jpg`;
-            return url
-        }
     }
 };
 </script>
