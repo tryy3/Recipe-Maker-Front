@@ -53,6 +53,9 @@ mutation CreateIngredient($ingredient: ingredients_insert_input!) {
     insert_ingredients(objects: [$ingredient]) {
         returning {
             id
+            description
+            title
+            image
         }
     }
 }
@@ -60,5 +63,8 @@ mutation CreateIngredient($ingredient: ingredients_insert_input!) {
 mutation DeleteIngredient($id: String!) {
     delete_ingredients(where: { id: { _eq: $id } }) {
         affected_rows
+        returning {
+            id
+        }
     }
 }

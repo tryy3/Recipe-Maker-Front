@@ -35,14 +35,39 @@
 </template>
 
 <script>
-import { CreateIngredient } from "@/graphql/ingredients.gql";
+import { CreateIngredient, FindAllIngredients } from "@/graphql/ingredients.gql";
 import IngredientEditor from "@/components/IngredientEditor";
 import { useToast } from 'vue-toastification';
+import { useMutation } from '@vue/apollo-composable';
+import { useRouter } from 'vue-router'
+import { reactive, ref } from 'vue-demi';
 
 export default {
     setup() {
         const toast = useToast();
-        return { toast }
+        const creating = ref(false);
+        const router = useRouter();
+        
+        const ingredient = reactive({
+            image: "",
+            title: "",
+            description: "",
+        })
+
+        const { mutate: RunCreateIngredient, onDone, onError } = useMutation(CreateIngredient)
+
+        onDone(({data}) => {
+            creating.value = false;
+            toast.success("Created");
+            router.push("/ingredient/" + data.insert_ingredients.returning[0].id);
+        });
+        onError((err) => {
+            creating.value = false;
+            console.log("Error", err)
+            toast.error(err);
+        });
+
+        return { toast, router, RunCreateIngredient, creating, ingredient }
     },
     components: {
         IngredientEditor
@@ -50,41 +75,24 @@ export default {
     methods: {
         createIngredient() {
             this.creating = true;
-            this.$apollo
-                .mutate({
-                    mutation: CreateIngredient,
-                    variables: {
-                        ingredient: {
-                            title: this.ingredient.title,
-                            description: this.ingredient.description,
-                            image: this.ingredient.image
-                        }
+            this.RunCreateIngredient({
+                ingredient: this.ingredient,
+            }, {
+                update: (cache, { data } ) => {
+                    const cachedData = cache.readQuery({ query: FindAllIngredients});
+                    if ((typeof cachedData) != "undefined" && cachedData != null) {
+                        cache.writeQuery({query:FindAllIngredients, data: {
+                            ...cachedData,
+                            ingredients: [
+                                ...cachedData.ingredients,
+                                data.insert_ingredients.returning[0]
+                            ]
+                        }})
                     }
-                })
-                .then(({ data }) => {
-                    this.creating = false;
-                    this.toast.success("Created");
-                    this.$router.push(
-                        "/ingredient/" + data.insert_ingredients.returning[0].id
-                    );
-                })
-                .catch(err => {
-                    this.creating = false;
-                    console.log(err);
-                    this.toast.error(err);
-                });
+                }
+            });
         }
     },
-    data() {
-        return {
-            ingredient: {
-                image: "",
-                title: "",
-                description: ""
-            },
-            creating: false
-        };
-    }
 };
 </script>
 

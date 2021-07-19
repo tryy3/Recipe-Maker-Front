@@ -55,11 +55,25 @@
 import { UpdateIngredient } from "@/graphql/ingredients.gql";
 import UploadImage from "@/components/UploadImage.vue";
 import { useToast } from 'vue-toastification';
+import { useMutation } from '@vue/apollo-composable'
+import { useRoute } from 'vue-router'
 
 export default {
     setup() {
         const toast = useToast();
-        return { toast }
+        const route = useRoute();
+
+        const { mutate: RunUpdateIngredient, onDone, onError } = useMutation(UpdateIngredient)
+
+        onDone(() => {
+            toast.success("Uploaded");
+        })
+        onError((err) => {
+            console.log("error uploading image", err)
+            toast.error(err)
+        })
+
+        return { toast, RunUpdateIngredient, route }
     },
     components: {
         UploadImage
@@ -71,22 +85,19 @@ export default {
         successFileUpload: function(data) {
             // TODO: Redo this to support multiple images
             var image = data.public_id;
-            this.$apollo
-                .mutate({
-                    mutation: UpdateIngredient,
-                    variables: {
-                        id: this.$route.params.ID,
-                        ingredient: {
-                            image
-                        }
+
+            // We are in the 
+            if (this.route.name == "CreateIngredient") {
+                this.ingredient.image = image
+            } else {
+                console.log(this.route);
+                this.RunUpdateIngredient({
+                    id: this.route.params.ID,
+                    ingredient: {
+                        image
                     }
                 })
-                .then(data => {
-                    this.toast.success("Uploaded");
-                })
-                .catch(err => {
-                    this.toast.error(err);
-                });
+            }
         },
         failedFileUpload: function({ statusText }) {
             this.toast.error(statusText);

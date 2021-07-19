@@ -28,6 +28,7 @@ export default [
     },
     {
         path: "/ingredient/create",
+        name: "CreateIngredient",
         component: CreateIngredient,
         beforeEnter: routeGuard
     },
@@ -45,6 +46,7 @@ export default [
     },
     {
         path: "/recipe/create",
+        name: "CreateRecipe",
         component: CreateRecipe,
         beforeEnter: routeGuard
     },

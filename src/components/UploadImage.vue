@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-for="(image, index) in images" :key="index">
-            <cld-image :publicId="image || ''" width="auto" crop="scale" />
+            <img :src="cloudinaryImage(image)" />
         </div>
 
         <div class="flex flex-wrap justify-center my-2">

@@ -2,5 +2,6 @@
     "domain": "dev-zay1ukbe.eu.auth0.com",
     "client_id": "gtb3WWn16bxwo4vgF7eGKtXKdtMSqmfu",
     "redirect_uri": "http://localhost:8080",
-    "audience": "hasura"
+    "audience": "hasura",
+    "cacheLocation": "localstorage"
 }

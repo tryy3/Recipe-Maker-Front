@@ -97,35 +97,61 @@ import {
     DeleteIngredient
 } from "@/graphql/ingredients.gql";
 import { useToast } from 'vue-toastification';
-import { useQuery, useResult } from '@vue/apollo-composable';
+import { useQuery, useResult, useMutation } from '@vue/apollo-composable';
+import { isProxy, isReactive, isReadonly } from 'vue';
 
 export default {
     setup() {
         const toast = useToast();
 
+        const { mutate: RunDeleteIngredient, onDone, onError } = useMutation(DeleteIngredient)
         const { result, loading, error } = useQuery(FindAllIngredients);
         const ingredients = useResult(result, null, data => data.ingredients);
+        
+        onDone(() => {
+            toast.success("Deleted");
+        })
+        onError((err) => {
+            console.log("Error", err)
+            toast.error(err)
+        })
 
-        return { toast, ingredients, error, loading }
+        return { toast, ingredients, error, loading, RunDeleteIngredient }
     },
     methods: {
         deleteIngredient(e) {
             var id = e.target.getAttribute("id");
-            this.$apollo
-                .mutate({
-                    mutation: DeleteIngredient,
-                    variables: {
-                        id
-                    }
-                })
-                .then(({ data }) => {
-                    this.ingredients.splice(e.target.getAttribute("index"), 1);
-                    this.toast.success("Deleted");
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.toast.error(err);
-                });
+            this.RunDeleteIngredient({
+                id,
+            }, {
+                update: (cache, { data } ) => {
+                    const cachedData = cache.readQuery({ query: FindAllIngredients});
+                    const newIngredients = cachedData.ingredients.filter(
+                        (ingredient) => ingredient.id != data.delete_ingredients.returning[0].id
+                    )
+                    cache.writeQuery({ query: FindAllIngredients, data: {
+                        ...cachedData,
+                        ingredients: [
+                            ...newIngredients
+                        ]
+                    }})
+                }
+            })
+            // this.$apollo
+            //     .mutate({
+            //         mutation: DeleteIngredient,
+            //         variables: {
+            //             id
+            //         }
+            //     })
+            //     .then(({ data }) => {
+            //         this.ingredients.splice(e.target.getAttribute("index"), 1);
+            //         this.toast.success("Deleted");
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //         this.toast.error(err);
+            //     });
         },
     }
 };
