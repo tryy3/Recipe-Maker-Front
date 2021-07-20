@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="loading-box" v-if="apolloLoading">
+        <div class="loading-box" v-if="loading">
             <div class="flex content-center flex-wrap">
                 <div class="w-full text-center">
                     <i
@@ -12,7 +12,10 @@
                 </div>
             </div>
         </div>
-        <div v-if="!apolloLoading">
+        <div class="error-box" v-if="error">
+            Error: {{error.message}}
+        </div>
+        <div v-if="!loading">
             <div class="container mx-auto flex flex-wrap justify-center">
                 <router-link
                     to="/recipe/create"
@@ -23,6 +26,7 @@
             <transition-group
                 name="recipe-list-item"
                 class="container mx-auto flex flex-wrap justify-center"
+                tag="div"
             >
                 <div
                     v-for="(recipe, index) in recipes"
@@ -39,20 +43,7 @@
                             :index="index"
                         ></i>
                         <router-link v-bind:to="'/recipe/' + recipe.id">
-                            <!--div v-for="(image, index) in images" :key="index">
-                            <cld-image
-                                :publicId="image"
-                                width="auto"
-                                crop="scale"
-                            />
-                        </div-->
-                            <cld-image
-                                :publicId="
-                                    recipe.image || '/samples/animals/cat.jpg'
-                                "
-                                width="auto"
-                                crop="scale"
-                            />
+                            <img :src="cloudinaryImage(recipe.image)" />
                             <div class="px-6">
                                 <div class="py-4">
                                     <div class="font-bold text-xl mb-2">
@@ -84,50 +75,54 @@
                 </div>
             </transition-group>
         </div>
-        <div v-if="apolloLoading">Loading...</div>
+        <div v-if="loading">Loading...</div>
     </div>
 </template>
 
 <script>
 import { FindAllRecipes, DeleteRecipe } from "@/graphql/recipes.gql";
 import { useToast } from 'vue-toastification';
+import { useQuery, useResult, useMutation } from '@vue/apollo-composable';
 
 export default {
     setup() {
         const toast = useToast();
-        return { toast }
-    },
-    computed: {
-        apolloLoading() {
-            if ((typeof this.$apollo) == "undefined") return false;
-            if ((typeof this.$apollo.loading) == "undefined") return false;
-            return this.$apollo.loading;
-        }
+
+        const { mutate: RunDeleteRecipe, onDone, onError } = useMutation(DeleteRecipe)
+        const { result, loading, error } = useQuery(FindAllRecipes);
+        const recipes = useResult(result, null, data => data.recipes);
+        
+        onDone(() => {
+            toast.success("Deleted");
+        })
+        onError((err) => {
+            console.log("Error", err)
+            toast.error(err)
+        })
+
+        return { toast, recipes, error, loading, RunDeleteRecipe }
     },
     methods: {
         deleteRecipe(e) {
-            console.log(this);
             var id = e.target.getAttribute("id");
-            this.$apollo
-                .mutate({
-                    mutation: DeleteRecipe,
-                    variables: {
-                        id
-                    }
-                })
-                .then(({ data }) => {
-                    this.recipes.splice(e.target.getAttribute("index"), 1);
-                    this.toast.success("Deleted");
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.toast.error(err);
-                });
-        }
+            this.RunDeleteRecipe({
+                id,
+            }, {
+                update: (cache, { data } ) => {
+                    const cachedData = cache.readQuery({ query: FindAllRecipes});
+                    const newRecipes = cachedData.recipes.filter(
+                        (recipe) => recipe.id != data.delete_recipes.returning[0].id
+                    )
+                    cache.writeQuery({ query: FindAllRecipes, data: {
+                        ...cachedData,
+                        recipes: [
+                            ...newRecipes
+                        ]
+                    }})
+                }
+            })
+        },
     },
-    apollo: {
-        recipes: FindAllRecipes
-    }
 };
 </script>
 

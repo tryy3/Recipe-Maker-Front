@@ -23,25 +23,12 @@ import "vue-toastification/dist/index.css";
 import "./styles/output.css";
 import "./styles/base.css";
 
-// Create and initialize apollo
-// const apolloProvider = new VueApollo({
-//     defaultClient: apolloClient
-// });
-
 // Initialize the router
 const router = createRouter({
     history: createWebHistory(),
     routes,
 })
 
-// Initialize Vue
-// const app = createApp({
-//     apolloProvider,
-//     router,
-//     el: "#app",
-//     render: h => h(App),
-//     methods: {}
-// });
 const app = createApp({
     setup() {
         provide(DefaultApolloClient, apolloClient);
@@ -51,7 +38,6 @@ const app = createApp({
 
 // Initialize Vue plugins
 app.use(router);
-// app.use(apolloProvider);
 app.use(Toast, {});
 app.use(Cloudinary, {
     configuration: {

@@ -35,14 +35,40 @@
 </template>
 
 <script>
-import { CreateRecipe } from "@/graphql/recipes.gql";
+import { CreateRecipe, FindAllRecipes } from "@/graphql/recipes.gql";
 import RecipeEditor from "@/components/RecipeEditor";
 import { useToast } from 'vue-toastification';
+import { useMutation } from '@vue/apollo-composable';
+import { useRouter } from 'vue-router'
+import { reactive, ref } from 'vue';
 
 export default {
     setup() {
         const toast = useToast();
-        return { toast }
+        const creating = ref(false);
+        const router = useRouter();
+        
+        const recipe = reactive({
+            description: "",
+            image: "",
+            title: "",
+            recipeIngredients: []
+        })
+
+        const { mutate: RunCreateRecipe, onDone, onError } = useMutation(CreateRecipe)
+
+        onDone(({data}) => {
+            creating.value = false;
+            toast.success("Created");
+            router.push("/recipe/" + data.insert_recipes.returning[0].id);
+        });
+        onError((err) => {
+            creating.value = false;
+            console.log("Error", err)
+            toast.error(err);
+        });
+
+        return { toast, router, RunCreateRecipe, creating, recipe }
     },
     components: {
         RecipeEditor
@@ -50,40 +76,24 @@ export default {
     methods: {
         createRecipe() {
             this.creating = true;
-            this.$apollo
-                .mutate({
-                    mutation: CreateRecipe,
-                    variables: {
-                        recipe: {
-                            title: this.recipe.title,
-                            description: this.recipe.description
-                        }
+            this.RunCreateRecipe({
+                recipe: this.recipe,
+            }, {
+                update: (cache, { data } ) => {
+                    const cachedData = cache.readQuery({ query: FindAllRecipes});
+                    if ((typeof cachedData) != "undefined" && cachedData != null) {
+                        cache.writeQuery({query:FindAllRecipes, data: {
+                            ...cachedData,
+                            recipes: [
+                                ...cachedData.recipes,
+                                data.insert_recipes.returning[0]
+                            ]
+                        }})
                     }
-                })
-                .then(({ data }) => {
-                    this.creating = false;
-                    this.toast.success("Created");
-                    this.$router.push(
-                        "/recipe/" + data.insert_recipes.returning[0].id
-                    );
-                })
-                .catch(err => {
-                    this.creating = false;
-                    console.log(err);
-                    this.toast.error(err);
-                });
+                }
+            });
         }
     },
-    data() {
-        return {
-            recipe: {
-                image: "",
-                title: "",
-                description: ""
-            },
-            creating: false
-        };
-    }
 };
 </script>
 

@@ -43,18 +43,6 @@
                             :index="index"
                         ></i>
                         <router-link v-bind:to="'/ingredient/' + ingredient.id">
-                            <!--div v-for="(image, index) in images" :key="index">
-                            <cld-image
-                                :publicId="image"
-                                width="auto"
-                                crop="scale"
-                            />
-                        </div-->
-                            <!-- <cld-image
-                                :publicId="ingredient.image"
-                                width="auto"
-                                crop="scale"
-                            /> -->
                             <img :src="cloudinaryImage(ingredient.image)" />
                             <div class="px-6">
                                 <div class="py-4">
@@ -98,7 +86,6 @@ import {
 } from "@/graphql/ingredients.gql";
 import { useToast } from 'vue-toastification';
 import { useQuery, useResult, useMutation } from '@vue/apollo-composable';
-import { isProxy, isReactive, isReadonly } from 'vue';
 
 export default {
     setup() {
@@ -137,21 +124,6 @@ export default {
                     }})
                 }
             })
-            // this.$apollo
-            //     .mutate({
-            //         mutation: DeleteIngredient,
-            //         variables: {
-            //             id
-            //         }
-            //     })
-            //     .then(({ data }) => {
-            //         this.ingredients.splice(e.target.getAttribute("index"), 1);
-            //         this.toast.success("Deleted");
-            //     })
-            //     .catch(err => {
-            //         console.log(err);
-            //         this.toast.error(err);
-            //     });
         },
     }
 };

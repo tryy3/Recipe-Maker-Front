@@ -44,15 +44,14 @@ input recipes_insert_input {
     title: String
 }
 
-input recipe_set_input {
+input recipes_set_input {
     description: String
     title: String
     image: String
 }
 
-input RecipeIngredientUpdateInput {
-    id: ID!
-    measurementType: MeasurementType
+input recipeIngredients_set_input {
+    measurementType: String
     measurementValue: Float
 }
 
@@ -99,25 +98,40 @@ query FindRecipeWithID($id: String!) {
 mutation CreateRecipe($recipe: recipes_insert_input!) {
     insert_recipes(objects: [$recipe]) {
         returning {
+            description
             id
+            image
+            title
+            recipeIngredients {
+                id
+                measurementType
+                measurementValue
+                ingredient {
+                    description
+                    id
+                    image
+                    title
+                }
+            }
         }
     }
 }
 
-mutation UpdateRecipe($id: ID!, $recipe: RecipeUpdateInput!) {
-    updateRecipe(id: $id, recipe: $recipe) {
-        id
-        description
-        title
-        image
-        ingredients {
+mutation UpdateRecipe($id: String!, $recipe: recipes_set_input!) {
+    update_recipes(where: {id: {_eq: $id}}, _set: $recipe) {
+        affected_rows
+        returning {
             id
-            title
-            description
             image
-            measurementType
-            measurementValue
+            description
+            title
         }
+    }
+}
+
+mutation UpdateRecipeIngredient($id: String!, $recipeIngredient: recipeIngredients_set_input!) {
+    update_recipeIngredients(where: {id: {_eq: $id}}, _set: $recipeIngredient) {
+        affected_rows
     }
 }
 
@@ -146,5 +160,8 @@ mutation AddRecipeIngredient($recipeId: String!, $ingredientId: String!) {
 mutation RemoveRecipeIngredient($recipeIngredientId: String!) {
     delete_recipeIngredients(where: { id: { _eq: $recipeIngredientId } }) {
         affected_rows
+        returning {
+            id
+        }
     }
 }

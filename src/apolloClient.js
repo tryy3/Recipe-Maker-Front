@@ -29,9 +29,12 @@ const client = new ApolloClient({
                 fields: {
                     "ingredients": {
                         merge: false,
-                    }
+                    },
+                    "recipes": {
+                        merge: false,
+                    },
                 }
-            }
+            },
         }
     }),
     connectToDevTools: true,

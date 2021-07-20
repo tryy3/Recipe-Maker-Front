@@ -40,7 +40,7 @@ import IngredientEditor from "@/components/IngredientEditor";
 import { useToast } from 'vue-toastification';
 import { useMutation } from '@vue/apollo-composable';
 import { useRouter } from 'vue-router'
-import { reactive, ref } from 'vue-demi';
+import { reactive, ref } from 'vue';
 
 export default {
     setup() {

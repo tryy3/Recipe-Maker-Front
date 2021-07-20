@@ -9,7 +9,7 @@ export default {
                 cloudinaryImage(image) {
                     const userID = options.configuration.cloudName;
                     let imageID = "placeholder";
-                    if ((typeof image) != "undefined" && image != "") imageID = image;
+                    if ((typeof image) != "undefined" && image != "" && image != null) imageID = image;
                 
                     let url = `https://res.cloudinary.com/${userID}/image/upload/${imageID}.jpg`;
                     return url
