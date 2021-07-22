@@ -47,8 +47,8 @@
 </template>
 
 <script>
-import { FindRecipeWithID, UpdateRecipe, UpdateRecipeIngredient } from "@/graphql/recipes.gql";
-import RecipeEditor from "@/components/RecipeEditor";
+import { FindRecipeWithID, UpdateRecipe, UpdateRecipeIngredient } from "@graphql/recipes.gql";
+import RecipeEditor from "@components/RecipeEditor.vue";
 import { useToast } from 'vue-toastification';
 import { useQuery, useResult, useMutation } from '@vue/apollo-composable';
 import { useRoute } from 'vue-router'

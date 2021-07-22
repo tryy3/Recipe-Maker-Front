@@ -1,134 +1,143 @@
-"use strict";
+import createAuth0Client from '@auth0/auth0-spa-js'
+import { computed, reactive, watchEffect } from 'vue'
 
-// import Vue from "vue";
-import { createApp } from 'vue';
-import createAuth0Client from "@auth0/auth0-spa-js";
+let client
+const state = reactive({
+  loading: true,
+  isAuthenticated: false,
+  user: {},
+  popupOpen: false,
+  error: null,
+})
 
-const app = createApp({});
+async function loginWithPopup() {
+  state.popupOpen = true
 
-/** Define a default action to perform after authentication */
-const DEFAULT_REDIRECT_CALLBACK = () =>
-    window.history.replaceState({}, document.title, window.location.pathname);
+  try {
+    await client.loginWithPopup(0)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    state.popupOpen = false
+  }
 
-let instance;
+  state.user = await client.getUser()
+  state.isAuthenticated = true
+}
 
-/** Returns the current instance of the SDK */
-export const getInstance = () => instance;
+async function handleRedirectCallback() {
+  state.loading = true
 
-/** Creates an instance of the Auth0 SDK. If one has already been created, it returns that instance */
-export const useAuth0 = ({
-    onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
-    redirectUri = window.location.origin,
-    ...options
-}) => {
-    if (instance) return instance;
+  try {
+    await client.handleRedirectCallback()
+    state.user = await client.getUser()
+    state.isAuthenticated = true
+  } catch (e) {
+    state.error = e
+  } finally {
+    state.loading = false
+  }
+}
 
-    // The 'instance' is simply a Vue object
-    instance = new Vue({
-        data() {
-            return {
-                loading: true,
-                isAuthenticated: false,
-                user: {},
-                auth0Client: null,
-                popupOpen: false,
-                error: null
-            };
-        },
-        methods: {
-            /** Authenticates the user using a popup window */
-            async loginWithPopup(o) {
-                this.popupOpen = true;
+function loginWithRedirect(o) {
+  return client.loginWithRedirect(o)
+}
 
-                try {
-                    await this.auth0Client.loginWithPopup(o);
-                } catch (e) {
-                    // eslint-disable-next-line
-                    console.error(e);
-                } finally {
-                    this.popupOpen = false;
-                }
+function getIdTokenClaims(o) {
+  return client.getIdTokenClaims(o)
+}
 
-                this.user = await this.auth0Client.getUser();
-                this.isAuthenticated = true;
-            },
-            /** Handles the callback when logging in using a redirect */
-            async handleRedirectCallback() {
-                this.loading = true;
-                try {
-                    await this.auth0Client.handleRedirectCallback();
-                    this.user = await this.auth0Client.getUser();
-                    this.isAuthenticated = true;
-                } catch (e) {
-                    this.error = e;
-                } finally {
-                    this.loading = false;
-                }
-            },
-            /** Authenticates the user using the redirect method */
-            loginWithRedirect(o) {
-                return this.auth0Client.loginWithRedirect(o);
-            },
-            /** Returns all the claims present in the ID token */
-            getIdTokenClaims(o) {
-                return this.auth0Client.getIdTokenClaims(o);
-            },
-            /** Returns the access token. If the token is invalid or missing, a new one is retrieved */
-            getTokenSilently(o) {
-                return this.auth0Client.getTokenSilently(o);
-            },
-            /** Gets the access token using a popup window */
+export function getTokenSilently(o) {
+  return client.getTokenSilently(o)
+}
 
-            getTokenWithPopup(o) {
-                return this.auth0Client.getTokenWithPopup(o);
-            },
-            /** Logs the user out and removes their session on the authorization server */
-            logout(o) {
-                return this.auth0Client.logout(o);
-            }
-        },
-        /** Use this lifecycle method to instantiate the SDK client */
-        async created() {
-            // Create a new instance of the SDK client using members of the given options object
-            this.auth0Client = await createAuth0Client({
-                domain: options.domain,
-                client_id: options.clientId,
-                audience: options.audience,
-                redirect_uri: redirectUri
-            });
+function getTokenWithPopup(o) {
+  return client.getTokenWithPopup(o)
+}
 
-            try {
-                // If the user is returning to the app after authentication..
-                if (
-                    window.location.search.includes("code=") &&
-                    window.location.search.includes("state=")
-                ) {
-                    // handle the redirect and retrieve tokens
-                    const {
-                        appState
-                    } = await this.auth0Client.handleRedirectCallback();
+function logout(o) {
+  return client.logout(o)
+}
 
-                    // Notify subscribers that the redirect callback has happened, passing the appState
-                    // (useful for retrieving any pre-authentication state)
-                    onRedirectCallback(appState);
-                }
-            } catch (e) {
-                this.error = e;
-            } finally {
-                // Initialize our internal authentication state
-                this.isAuthenticated = await this.auth0Client.isAuthenticated();
-                this.user = await this.auth0Client.getUser();
-                this.loading = false;
-            }
-        }
-    });
+const authPlugin = {
+  isAuthenticated: computed(() => state.isAuthenticated),
+  loading: computed(() => state.loading),
+  user: computed(() => state.user),
+  getIdTokenClaims,
+  getTokenSilently,
+  getTokenWithPopup,
+  handleRedirectCallback,
+  loginWithRedirect,
+  loginWithPopup,
+  logout,
+}
 
-    return instance;
-};
+export const routeGuard = (to, from, next) => {
+  const { isAuthenticated, loading, loginWithRedirect } = authPlugin
 
-// Create a simple Vue plugin to expose the wrapper object throughout the application
-export const Auth0Plugin = {
-    install(app, options) {
-        app.prototype.$auth = useAuth0(options);
+  const verify = () => {
+    // If the user is authenticated, continue with the route
+    if (isAuthenticated.value) {
+      return next()
     }
-};
+
+    // Otherwise, log in
+    loginWithRedirect({ appState: { targetUrl: to.fullPath } })
+  }
+
+  // If loading has already finished, check our auth state using `fn()`
+  if (!loading.value) {
+    return verify()
+  }
+
+  // Watch for the loading property to change before we check isAuthenticated
+  watchEffect(() => {
+    if (loading.value === false) {
+      return verify()
+    }
+  })
+}
+
+export const logoutAuth = () => {
+  console.log(this);
+  console.log(authPlugin);
+  console.log(client);
+  console.log(logout)
+  console.log(logout());
+}
+
+export const setupAuth = async (options, callbackRedirect) => {
+  client = await createAuth0Client({
+    ...options,
+  })
+
+  try {
+    // If the user is returning to the app after authentication
+    
+
+    if (
+      window.location.search.includes('code=') &&
+      window.location.search.includes('state=')
+    ) {
+      // handle the redirect and retrieve tokens
+      const { appState } = await client.handleRedirectCallback()
+
+      // Notify subscribers that the redirect callback has happened, passing the appState
+      // (useful for retrieving any pre-authentication state)
+      callbackRedirect(appState)
+    }
+  } catch (e) {
+    state.error = e
+  } finally {
+    // Initialize our internal authentication state
+    state.isAuthenticated = await client.isAuthenticated()
+    state.user = await client.getUser()
+    state.loading = false
+  }
+
+  return {
+    install: (app) => {
+      app.config.globalProperties.$auth = authPlugin
+    },
+  }
+}

@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from } from "@apollo
 import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 import { onError } from "@apollo/client/link/error";
-import { getTokenSilently } from './auth/vue3_auth.js';
+import { getTokenSilently } from './auth';
 
 const link = from([
     setContext(async (req, prevContext) => {
@@ -33,8 +33,21 @@ const client = new ApolloClient({
                     "recipes": {
                         merge: false,
                     },
+                    "pumps": {
+                        merge: false,
+                    }
                 }
             },
+            // "pumps": {
+            //     fields: {
+            //         name: {
+            //             read(_, { variables }) {
+            //                 console.log(arguments);
+            //                 return "Hi";
+            //             }
+            //         }
+            //     }
+            // }
         }
     }),
     connectToDevTools: true,

@@ -47,6 +47,11 @@
                         class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
                         >Ingredients</router-link
                     >
+                    <router-link
+                        to="/settings"
+                        class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                        >Settings</router-link
+                    >
                 </div>
                 <div class="text-smn" v-if="!$auth.loading.value">
                     <button

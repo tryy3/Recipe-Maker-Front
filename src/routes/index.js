@@ -1,15 +1,17 @@
 // Middlewares
-import { routeGuard, logoutAuth } from "@/auth/vue3_auth";
+import { routeGuard, logoutAuth } from "@auth";
 
-import Profile from "@/pages/user/Profile";
+import Profile from "@pages/user/Profile.vue";
 
-import Ingredients from "@/pages/ingredients/Ingredients.vue";
-import UpdateIngredient from "@/pages/ingredients/UpdateIngredient.vue";
-import CreateIngredient from "@/pages/ingredients/CreateIngredient.vue";
+import Ingredients from "@pages/ingredients/Ingredients.vue";
+import UpdateIngredient from "@pages/ingredients/UpdateIngredient.vue";
+import CreateIngredient from "@pages/ingredients/CreateIngredient.vue";
 
-import Recipes from "@/pages/recipes/Recipes.vue";
-import UpdateRecipe from "@/pages/recipes/UpdateRecipe.vue";
-import CreateRecipe from "@/pages/recipes/CreateRecipe.vue";
+import Recipes from "@pages/recipes/Recipes.vue";
+import UpdateRecipe from "@pages/recipes/UpdateRecipe.vue";
+import CreateRecipe from "@pages/recipes/CreateRecipe.vue";
+
+import Settings from "@pages/settings/Settings.vue";
 
 export default [
     // User routes
@@ -55,4 +57,11 @@ export default [
         component: UpdateRecipe,
         beforeEnter: routeGuard
     },
+
+    // Settings routes
+    {
+        path: "/settings",
+        component: Settings,
+        beforeEnter: routeGuard,
+    }
 ];

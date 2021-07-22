@@ -219,9 +219,9 @@ import {
     RemoveRecipeIngredient,
     UpdateRecipe,
     FindRecipeWithID
-} from "@/graphql/recipes.gql";
-import { FindAllIngredients } from "@/graphql/ingredients.gql";
-import UploadImage from "@/components/UploadImage.vue";
+} from "@graphql/recipes.gql";
+import { FindAllIngredients } from "@graphql/ingredients.gql";
+import UploadImage from "@components/UploadImage.vue";
 import Draggable from "vuedraggable";
 import { useToast } from 'vue-toastification';
 import { useQuery, useResult, useMutation } from '@vue/apollo-composable';

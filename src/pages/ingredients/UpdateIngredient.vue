@@ -50,8 +50,8 @@
 import {
     FindIngredientWithID,
     UpdateIngredient
-} from "@/graphql/ingredients.gql";
-import IngredientEditor from "@/components/IngredientEditor";
+} from "@graphql/ingredients.gql";
+import IngredientEditor from "@components/IngredientEditor.vue";
 import { useToast } from 'vue-toastification';
 import { useQuery, useResult, useMutation } from '@vue/apollo-composable';
 import { useRoute } from 'vue-router'

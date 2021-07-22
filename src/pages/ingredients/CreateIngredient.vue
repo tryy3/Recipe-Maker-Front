@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import { CreateIngredient, FindAllIngredients } from "@/graphql/ingredients.gql";
-import IngredientEditor from "@/components/IngredientEditor";
+import { CreateIngredient, FindAllIngredients } from "@graphql/ingredients.gql";
+import IngredientEditor from "@components/IngredientEditor.vue";
 import { useToast } from 'vue-toastification';
 import { useMutation } from '@vue/apollo-composable';
 import { useRouter } from 'vue-router'

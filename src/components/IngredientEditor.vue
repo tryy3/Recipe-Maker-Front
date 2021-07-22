@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import { UpdateIngredient } from "@/graphql/ingredients.gql";
-import UploadImage from "@/components/UploadImage.vue";
+import { UpdateIngredient } from "@graphql/ingredients.gql";
+import UploadImage from "@components/UploadImage.vue";
 import { useToast } from 'vue-toastification';
 import { useMutation } from '@vue/apollo-composable'
 import { useRoute } from 'vue-router'

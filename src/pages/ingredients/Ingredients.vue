@@ -83,7 +83,7 @@
 import {
     FindAllIngredients,
     DeleteIngredient
-} from "@/graphql/ingredients.gql";
+} from "@graphql/ingredients.gql";
 import { useToast } from 'vue-toastification';
 import { useQuery, useResult, useMutation } from '@vue/apollo-composable';
 

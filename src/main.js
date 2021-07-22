@@ -4,23 +4,22 @@ import "regenerator-runtime/runtime";
 // Import Vue related imports
 import { createApp, provide, h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import VueApollo from "vue-apollo";
 import Toast from "vue-toastification";
 import Cloudinary from "./plugins/cloudinary";
 import { DefaultApolloClient } from '@vue/apollo-composable'
 
 // Internal imports
 import routes from "./routes/";
-import App from "./App";
+import App from "./App.vue";
 import apolloClient from "./apolloClient";
 
 // Import auth.
 import authConfig from './auth/auth_config.json';
-import { setupAuth } from './auth/vue3_auth.js';
+import { setupAuth } from './auth';
 
 // Import global css styles
 import "vue-toastification/dist/index.css";
-import "./styles/output.css";
+import "./tailwind.css";
 import "./styles/base.css";
 
 // Initialize the router

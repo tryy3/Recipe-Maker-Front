@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { FindAllRecipes, DeleteRecipe } from "@/graphql/recipes.gql";
+import { FindAllRecipes, DeleteRecipe } from "@graphql/recipes.gql";
 import { useToast } from 'vue-toastification';
 import { useQuery, useResult, useMutation } from '@vue/apollo-composable';
 

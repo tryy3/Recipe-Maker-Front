@@ -14,3 +14,7 @@ yarn-error.log
 
 # Ignore DevSpace cache and log folder
 .devspace/
+
+# Custom files
+localhost-key.pem
+localhost.pem
